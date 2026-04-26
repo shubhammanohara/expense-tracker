@@ -75,14 +75,14 @@ export default function App() {
       {activeTab === "home" && (
         <button
           onClick={() => setActiveTab("add")}
-          className="fixed bottom-28 right-6 w-14 h-14 bg-primary text-surface rounded-full shadow-[0_12px_24px_rgba(78,222,163,0.4)] flex items-center justify-center z-50 active:scale-90 transition-transform"
+          className="fixed bottom-20 right-6 w-14 h-14 bg-primary text-surface rounded-full shadow-[0_12px_24px_rgba(78,222,163,0.4)] flex items-center justify-center z-50 active:scale-90 transition-transform"
         >
           <PlusCircle className="w-8 h-8" />
         </button>
       )}
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-surface/40 backdrop-blur-xl rounded-t-[32px] shadow-[0_-16px_32px_rgba(0,0,0,0.4)]">
+      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-2 pt-2 bg-surface/40 backdrop-blur-xl rounded-t-4xl shadow-[0_-16px_32px_rgba(0,0,0,0.4)]">
         <NavButton
           active={activeTab === "home"}
           onClick={() => setActiveTab("home")}
@@ -123,13 +123,13 @@ function NavButton({ active, onClick, icon, label }: NavButtonProps) {
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center justify-center transition-all ${
+      className={`flex flex-1 flex-col items-center justify-center transition-all ${
         active
           ? "bg-primary/20 text-primary rounded-full px-5 py-2 scale-100"
           : "text-on-surface-variant opacity-60 hover:opacity-100 scale-90"
       }`}
     >
-      <div className={active ? "[&>svg]:fill-primary" : ""}>{icon}</div>
+      <div>{icon}</div>
       <span className="font-body text-[10px] font-semibold uppercase tracking-widest mt-1">
         {label}
       </span>
