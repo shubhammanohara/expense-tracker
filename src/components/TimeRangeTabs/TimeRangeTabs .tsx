@@ -1,9 +1,9 @@
-import { TabsData } from "@/src/types";
+import { DateRange, TabsData } from "@/src/types";
 import { FC } from "react";
 
 interface TimeRangeTabsProps {
   periodsData: TabsData[];
-  onChange: (period: string) => void;
+  onChange: (period: DateRange) => void;
 }
 
 const TimeRangeTabs: FC<TimeRangeTabsProps> = ({ periodsData, onChange }) => {

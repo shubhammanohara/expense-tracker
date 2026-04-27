@@ -1,21 +1,10 @@
+import {
+  Category,
+  PaymentMethod,
+  RecurringFrequency,
+  TransactionType,
+} from "../utils/constants";
 import axiosInstance from "./axiosInstance";
-
-// ── Types (mirror your backend) ────────────────────────────────────
-
-export type TransactionType = "income" | "expense";
-
-export type Category =
-  | "food"
-  | "transport"
-  | "entertainment"
-  | "health"
-  | "utilities"
-  | "salary"
-  | "other"; // match your CATEGORIES array
-
-export type PaymentMethod = "cash" | "card" | "upi" | "bank_transfer"; // match PAYMENT_METHODS
-
-export type RecurringFrequency = "daily" | "weekly" | "monthly" | "yearly";
 
 export interface Transaction {
   _id: string;

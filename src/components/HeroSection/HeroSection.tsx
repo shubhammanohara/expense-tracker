@@ -1,41 +1,52 @@
-import { FC, ReactNode, useCallback, useState } from "react";
+import { FC, ReactNode, useCallback, useMemo, useState } from "react";
 import TimeRangeTabs from "../TimeRangeTabs/TimeRangeTabs ";
-import { TabsData } from "@/src/types";
+import { DateRange, TabsData } from "@/src/types";
 import {
-  TIME_RANGE_DONUT_MONTH,
-  TIME_RANGE_DONUT_TODAY,
-  TIME_RANGE_DONUT_WEEK,
-  TIME_RANGE_DONUT_YEAR,
+  Category,
+  DATE_RANGE_MONTH,
+  DATE_RANGE_TODAY,
+  DATE_RANGE_WEEK,
+  DATE_RANGE_YEAR,
 } from "@/src/utils/constants";
 import DonutChart from "../DonutChart";
+import { useTransactions } from "@/src/hooks/useTransaction";
+import { getDateFilter } from "@/src/utils/dateFilters";
+import { ExpenseItem } from "../DonutChart/DonutChart";
 
 interface HeroSectionProps {
   children?: ReactNode;
 }
 
 const tabs: TabsData[] = [
-  { value: TIME_RANGE_DONUT_TODAY as string, label: "Today", isActive: true },
+  { value: DATE_RANGE_TODAY, label: "Today", isActive: true },
   {
-    value: TIME_RANGE_DONUT_WEEK as string,
+    value: DATE_RANGE_WEEK,
     label: "Week",
     isActive: false,
   },
   {
-    value: TIME_RANGE_DONUT_MONTH as string,
+    value: DATE_RANGE_MONTH,
     label: "Month",
     isActive: false,
   },
   {
-    value: TIME_RANGE_DONUT_YEAR as string,
+    value: DATE_RANGE_YEAR,
     label: "Year",
     isActive: false,
   },
 ];
 
+const COLORS = ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#06b6d4"];
+
 const HeroSection: FC<HeroSectionProps> = ({ children }) => {
   const [tabsData, setTabsData] = useState<TabsData[]>(tabs);
+  const [range, setRange] = useState<DateRange>("today");
 
-  const onTabChange = useCallback((value: string) => {
+  const { data: transactionData, isLoading } = useTransactions({
+    ...getDateFilter(range),
+  });
+
+  const onTabChange = useCallback((value: DateRange) => {
     setTabsData((prev) => {
       return prev.map((data) => {
         if (data.value === value) {
@@ -47,7 +58,31 @@ const HeroSection: FC<HeroSectionProps> = ({ children }) => {
         return { ...data, isActive: false };
       });
     });
+    setRange(value);
   }, []);
+
+  const chartData: ExpenseItem[] = useMemo(() => {
+    if (!transactionData?.data) return [];
+
+    const grouped = transactionData.data.reduce<Record<string, number>>(
+      (acc, transaction) => {
+        const { category, amount } = transaction;
+        acc[category] = (acc[category] ?? 0) + amount;
+        return acc;
+      },
+      {},
+    );
+
+    return Object.entries(grouped).map(([category, amount], i) => ({
+      name: category as Category,
+      value: amount,
+      fill: COLORS[i % COLORS.length], // mod to avoid out-of-bounds
+    }));
+  }, [transactionData]);
+
+  console.log("chartData", chartData);
+
+  if (isLoading) <div>Loading...</div>;
 
   return (
     <section className="space-y-6">
@@ -60,7 +95,7 @@ const HeroSection: FC<HeroSectionProps> = ({ children }) => {
       <div className="relative group">
         <div className="absolute -inset-1 bg-linear-to-r from-primary to-primary-container rounded-lg blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
         <div className="glass-card rounded-lg p-8 relative flex flex-col md:flex-row justify-between items-center gap-8">
-          <DonutChart />
+          <DonutChart data={chartData} />
         </div>
       </div>
     </section>

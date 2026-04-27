@@ -3,23 +3,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import * as Icons from 'lucide-react';
-import { Category } from '../data';
+import * as Icons from "lucide-react";
+import { Categories } from "../data";
 
-export default function CategoryProgress({ category }: { category: Category }) {
+export default function CategoryProgress({
+  category,
+}: {
+  category: Categories;
+}) {
   const IconComponent = (Icons as any)[category.icon] || Icons.CircleHelp;
-  
+
   const colors: Record<string, string> = {
-    primary: 'bg-primary',
-    secondary: 'bg-secondary',
-    tertiary: 'bg-tertiary',
+    primary: "bg-primary",
+    secondary: "bg-secondary",
+    tertiary: "bg-tertiary",
   };
 
   const textColors: Record<string, string> = {
-    primary: 'text-primary',
-    secondary: 'text-secondary',
-    tertiary: 'text-tertiary',
+    primary: "text-primary",
+    secondary: "text-secondary",
+    tertiary: "text-tertiary",
   };
 
   return (
@@ -32,8 +35,8 @@ export default function CategoryProgress({ category }: { category: Category }) {
         <span className="font-bold">{category.percentage}%</span>
       </div>
       <div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
-        <div 
-          className={`h-full ${colors[category.color]}`} 
+        <div
+          className={`h-full ${colors[category.color]}`}
           style={{ width: `${category.percentage}%` }}
         ></div>
       </div>

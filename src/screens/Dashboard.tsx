@@ -2,7 +2,7 @@ import HeroSection from "../components/HeroSection";
 import TrendsSection from "../components/TrendsSection";
 import RecentTransactionsSection from "../components/RecentTransactionsSection";
 
-export default function Dashboard() {
+export const Dashboard = () => {
   return (
     <div className="space-y-8 pb-10">
       <section className="px-2">
@@ -24,4 +24,6 @@ export default function Dashboard() {
       <RecentTransactionsSection />
     </div>
   );
-}
+};
+
+export default Dashboard;
