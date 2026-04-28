@@ -2,6 +2,7 @@ import { CATEGORIES } from "@/src/data";
 import { FC } from "react";
 import CategoryProgress from "../CategoryProgress";
 
+// Not in use yet maybe not needed at all, will decide later based on how the trends section looks with the chart and tabs
 const CategoriesOverview: FC = () => {
   return (
     <div className="glass-card rounded-lg p-6 flex flex-col justify-between">

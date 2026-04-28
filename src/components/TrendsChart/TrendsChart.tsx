@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import ErrorCard from "../ErrorCard";
 
 type ExpenseBarItem = {
   label: string;
@@ -120,15 +121,7 @@ export default function ExpenseBarChart({
   /* ---------------- Error ---------------- */
 
   if (error) {
-    return (
-      <div className="rounded-2xl p-6 shadow-sm">
-        <p className="text-lg font-semibold text-red-400">
-          Failed to load chart
-        </p>
-
-        <p className="mt-2 text-sm">{error}</p>
-      </div>
-    );
+    return <ErrorCard />;
   }
 
   return (

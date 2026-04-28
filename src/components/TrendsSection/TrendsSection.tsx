@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo, useState } from "react";
-import TrendsChart from "../TrendsChart";
-import TimeRangeTabs from "../TimeRangeTabs/TimeRangeTabs ";
 
 import { DateRange, Period, TabsData } from "@/src/types";
-import CategoriesOverview from "../CategoriesOverview";
+import TrendsChart from "../TrendsChart";
+import TimeRangeTabs from "../TimeRangeTabs/TimeRangeTabs ";
+// import CategoriesOverview from "../CategoriesOverview";
+
 import {
   PERIOD_DAILY,
   PERIOD_MONTHLY,
@@ -121,7 +122,7 @@ const TrendsSection = () => {
         />
       </div>
       {/* Categories Overview */}
-      <CategoriesOverview />
+      {/* <CategoriesOverview /> */}
     </section>
   );
 };

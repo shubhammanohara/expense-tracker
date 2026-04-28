@@ -11,11 +11,16 @@ export type TransactionType = "income" | "expense";
 export type Category =
   | "food"
   | "transport"
-  | "entertainment"
-  | "health"
+  | "rent"
   | "utilities"
+  | "healthcare"
+  | "entertainment"
+  | "education"
+  | "shopping"
+  | "travel"
   | "salary"
-  | "other"; // match your CATEGORIES array
+  | "investment"
+  | "other";
 
 export type PaymentMethod = "cash" | "card" | "upi" | "bank_transfer"; // match PAYMENT_METHODS
 

@@ -2,6 +2,7 @@ import { FC, useMemo, useState } from "react";
 import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
 
 import { Category } from "@/src/types";
+import ErrorCard from "../ErrorCard/";
 
 export interface ExpenseItem {
   name: Category;
@@ -21,7 +22,7 @@ const demoData: ExpenseItem[] = [
   { name: "food", value: 12450, fill: "#6366f1" },
   { name: "transport", value: 8600, fill: "#22c55e" },
   { name: "entertainment", value: 5400, fill: "#f59e0b" },
-  { name: "health", value: 7200, fill: "#ef4444" },
+  { name: "other", value: 7200, fill: "#ef4444" },
 ];
 
 const formatCurrency = (value: number) =>
@@ -80,15 +81,7 @@ export const DonutChart: FC<ExpenseDonutChartProps> = ({
   /* ---------------- Error ---------------- */
 
   if (error) {
-    return (
-      <div className="rounded-xl p-6 shadow-sm">
-        <p className="text-lg font-semibold text-red-600 dark:text-red-400">
-          Failed to load chart
-        </p>
-
-        <p className="mt-2 text-sm">{error}</p>
-      </div>
-    );
+    return <ErrorCard />;
   }
 
   return (

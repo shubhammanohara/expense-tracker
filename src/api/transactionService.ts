@@ -9,6 +9,7 @@ export interface Transaction {
   category: Category;
   description?: string;
   date: string;
+  merchant: string;
   paymentMethod: PaymentMethod;
   tags?: string[];
   isRecurring?: boolean;

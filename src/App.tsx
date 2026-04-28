@@ -11,12 +11,15 @@ import History from "./screens/History";
 import AddExpense from "./screens/AddExpense";
 import ProfileSettings from "./screens/Settings";
 import Header from "./components/Header";
+import Login from "./components/Login";
+import ButtonExample from "./components/Button/ButtonExample";
 
-export default function App() {
+const App = () => {
   const [activeTab, setActiveTab] = useState<
     "home" | "add" | "history" | "settings"
   >("home");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     if (theme === "light") {
@@ -31,7 +34,7 @@ export default function App() {
       case "home":
         return <Dashboard />;
       case "history":
-        return <History />;
+        return <ButtonExample />;
       case "add":
         return (
           <AddExpense
@@ -54,63 +57,71 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-surface selection:bg-primary/30 pb-32">
-      <Header />
+    <div
+      className={`min-h-screen bg-surface selection:bg-primary/30 ${isLoggedIn ? "pb-32" : ""}`}
+    >
+      {isLoggedIn ? (
+        <>
+          <Header />
 
-      <main className="pt-24 px-6 max-w-5xl mx-auto">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            {renderScreen()}
-          </motion.div>
-        </AnimatePresence>
-      </main>
+          <main className="pt-24 px-6 max-w-5xl mx-auto">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                {renderScreen()}
+              </motion.div>
+            </AnimatePresence>
+          </main>
 
-      {/* Floating Action Button (only on home) */}
-      {activeTab === "home" && (
-        <button
-          onClick={() => setActiveTab("add")}
-          className="fixed bottom-20 right-6 w-14 h-14 bg-primary text-surface rounded-full shadow-[0_12px_24px_rgba(78,222,163,0.4)] flex items-center justify-center z-50 active:scale-90 transition-transform"
-        >
-          <PlusCircle className="w-8 h-8" />
-        </button>
+          {/* Floating Action Button (only on home) */}
+          {activeTab === "home" && (
+            <button
+              onClick={() => setActiveTab("add")}
+              className="fixed bottom-20 right-6 w-14 h-14 bg-primary text-surface rounded-full shadow-[0_12px_24px_rgba(78,222,163,0.4)] flex items-center justify-center z-50 active:scale-90 transition-transform"
+            >
+              <PlusCircle className="w-8 h-8" />
+            </button>
+          )}
+
+          {/* Bottom Navigation */}
+          <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-2 pt-2 bg-surface/40 backdrop-blur-xl rounded-t-4xl shadow-[0_-16px_32px_rgba(0,0,0,0.4)]">
+            <NavButton
+              active={activeTab === "home"}
+              onClick={() => setActiveTab("home")}
+              icon={<Home />}
+              label="Home"
+            />
+            <NavButton
+              active={activeTab === "add"}
+              onClick={() => setActiveTab("add")}
+              icon={<PlusCircle />}
+              label="Add"
+            />
+            <NavButton
+              active={activeTab === "history"}
+              onClick={() => setActiveTab("history")}
+              icon={<ReceiptText />}
+              label="History"
+            />
+            <NavButton
+              active={activeTab === "settings"}
+              onClick={() => setActiveTab("settings")}
+              icon={<Settings />}
+              label="Settings"
+            />
+          </nav>
+        </>
+      ) : (
+        <Login setIsLoggedIn={setIsLoggedIn} />
       )}
-
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-2 pt-2 bg-surface/40 backdrop-blur-xl rounded-t-4xl shadow-[0_-16px_32px_rgba(0,0,0,0.4)]">
-        <NavButton
-          active={activeTab === "home"}
-          onClick={() => setActiveTab("home")}
-          icon={<Home />}
-          label="Home"
-        />
-        <NavButton
-          active={activeTab === "add"}
-          onClick={() => setActiveTab("add")}
-          icon={<PlusCircle />}
-          label="Add"
-        />
-        <NavButton
-          active={activeTab === "history"}
-          onClick={() => setActiveTab("history")}
-          icon={<ReceiptText />}
-          label="History"
-        />
-        <NavButton
-          active={activeTab === "settings"}
-          onClick={() => setActiveTab("settings")}
-          icon={<Settings />}
-          label="Settings"
-        />
-      </nav>
     </div>
   );
-}
+};
 
 interface NavButtonProps {
   active: boolean;
@@ -119,7 +130,7 @@ interface NavButtonProps {
   label: string;
 }
 
-function NavButton({ active, onClick, icon, label }: NavButtonProps) {
+const NavButton = ({ active, onClick, icon, label }: NavButtonProps) => {
   return (
     <button
       onClick={onClick}
@@ -135,4 +146,6 @@ function NavButton({ active, onClick, icon, label }: NavButtonProps) {
       </span>
     </button>
   );
-}
+};
+
+export default App;
