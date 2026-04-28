@@ -1,38 +1,85 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import TrendsChart from "../TrendsChart";
 import TimeRangeTabs from "../TimeRangeTabs/TimeRangeTabs ";
-import {
-  TIME_RANGE_DAILY,
-  TIME_RANGE_MONTHLY,
-  TIME_RANGE_WEEKLY,
-  TIME_RANGE_YEARLY,
-} from "@/src/utils/constants";
-import { TabsData } from "@/src/types";
+
+import { DateRange, Period, TabsData } from "@/src/types";
 import CategoriesOverview from "../CategoriesOverview";
+import {
+  PERIOD_DAILY,
+  PERIOD_MONTHLY,
+  PERIOD_WEEKLY,
+  PERIOD_YEARLY,
+} from "@/src/utils/constants";
+import { useTransactions } from "@/src/hooks/useTransaction";
+import { getDateFilter } from "@/src/utils/dateFilters";
+import { groupTransactions } from "@/src/utils/groupTransactions";
+
+interface TitleData {
+  title: string;
+  subtitle: string;
+  value: Period;
+  period: string;
+}
 
 const tabs: TabsData[] = [
-  { value: TIME_RANGE_DAILY as string, label: "Daily", isActive: true },
+  { value: PERIOD_DAILY, label: "Daily", isActive: true },
   {
-    value: TIME_RANGE_WEEKLY as string,
+    value: PERIOD_WEEKLY,
     label: "Weekly",
     isActive: false,
   },
   {
-    value: TIME_RANGE_MONTHLY as string,
+    value: PERIOD_MONTHLY,
     label: "Monthly",
     isActive: false,
   },
   {
-    value: TIME_RANGE_YEARLY as string,
+    value: PERIOD_YEARLY,
     label: "Yearly",
     isActive: false,
   },
 ];
 
+const titleData: TitleData[] = [
+  {
+    title: "Daily Spending",
+    subtitle: "Your daily spending pattern",
+    value: PERIOD_DAILY,
+    period: "Today",
+  },
+  {
+    title: "Weekly Spending",
+    subtitle: "Your weekly spending pattern",
+    value: PERIOD_WEEKLY,
+    period: "Last 7 Days",
+  },
+  {
+    title: "Monthly Spending",
+    subtitle: "Your monthly spending pattern",
+    value: PERIOD_MONTHLY,
+    period: "Last 30 Days",
+  },
+  {
+    title: "Yearly Spending",
+    subtitle: "Your yearly spending pattern",
+    value: PERIOD_YEARLY,
+    period: "Last 12 Months",
+  },
+];
+
 const TrendsSection = () => {
   const [tabsData, setTabsData] = useState<TabsData[]>(tabs);
+  const [period, setPeriod] = useState<Period>(PERIOD_WEEKLY);
+  const [title, setTitle] = useState<TitleData>(titleData[0]);
+  const {
+    data: transactionData,
+    isLoading,
+    error,
+  } = useTransactions({
+    ...getDateFilter(period),
+  });
 
-  const onTabChange = useCallback((value: string) => {
+  const onTabChange = useCallback((value: Period | DateRange) => {
     setTabsData((prev) => {
       return prev.map((data) => {
         if (data.value === value) {
@@ -44,7 +91,14 @@ const TrendsSection = () => {
         return { ...data, isActive: false };
       });
     });
+    setTitle(titleData.find((data) => data.value === value) ?? titleData[0]);
+    setPeriod(value as Period);
   }, []);
+
+  const chartData = useMemo(
+    () => groupTransactions(transactionData?.data ?? [], period),
+    [transactionData, period],
+  );
 
   return (
     <section className="space-y-6">
@@ -57,7 +111,14 @@ const TrendsSection = () => {
 
       {/* Bar Chart Representation */}
       <div className="glass-card rounded-lg p-6 min-h-70">
-        <TrendsChart />
+        <TrendsChart
+          data={chartData}
+          loading={isLoading}
+          error={error?.message}
+          title={title.title}
+          subtitle={title.subtitle}
+          period={title.period}
+        />
       </div>
       {/* Categories Overview */}
       <CategoriesOverview />

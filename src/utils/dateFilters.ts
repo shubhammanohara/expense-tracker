@@ -5,11 +5,11 @@ import {
   startOfYear,
   format,
 } from "date-fns";
-import { DateRange } from "../types";
+import { DateRange, Period } from "../types";
 
 const toDateStr = (d: Date) => format(d, "yyyy-MM-dd");
 
-export const getDateFilter = (range: DateRange) => {
+export const getDateFilter = (range: DateRange | Period) => {
   const now = new Date();
 
   const startMap = {
@@ -17,6 +17,10 @@ export const getDateFilter = (range: DateRange) => {
     week: startOfWeek(now, { weekStartsOn: 1 }), // Monday
     month: startOfMonth(now),
     year: startOfYear(now),
+    daily: startOfDay(now),
+    weekly: startOfWeek(now, { weekStartsOn: 1 }),
+    monthly: startOfMonth(now),
+    yearly: startOfYear(now),
   };
 
   return {

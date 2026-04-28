@@ -1,7 +1,7 @@
 import { FC, useMemo, useState } from "react";
 import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
 
-import { Category } from "@/src/utils/constants";
+import { Category } from "@/src/types";
 
 export interface ExpenseItem {
   name: Category;
@@ -11,7 +11,18 @@ export interface ExpenseItem {
 
 interface ExpenseDonutChartProps {
   data: ExpenseItem[];
+  loading?: boolean;
+  error?: string | null;
+  subtitle?: string;
+  period?: string;
 }
+
+const demoData: ExpenseItem[] = [
+  { name: "food", value: 12450, fill: "#6366f1" },
+  { name: "transport", value: 8600, fill: "#22c55e" },
+  { name: "entertainment", value: 5400, fill: "#f59e0b" },
+  { name: "health", value: 7200, fill: "#ef4444" },
+];
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("en-IN", {
@@ -20,7 +31,13 @@ const formatCurrency = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value);
 
-export const DonutChart: FC<ExpenseDonutChartProps> = ({ data }) => {
+export const DonutChart: FC<ExpenseDonutChartProps> = ({
+  data = demoData,
+  loading = false,
+  error = null,
+  subtitle = "Monthly category spending",
+  period = "This month",
+}) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const hasData = data.length > 0;
@@ -37,8 +54,57 @@ export const DonutChart: FC<ExpenseDonutChartProps> = ({ data }) => {
   const activePercent =
     activeItem?.value && ((activeItem?.value / total) * 100).toFixed(1);
 
+  if (loading) {
+    return (
+      <div className="w-full">
+        <div className="mb-5 h-6 w-40 animate-pulse rounded bg-surface-container-highest" />
+
+        <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
+          <div className="flex h-80 items-center justify-center">
+            <div className="h-44 w-44 rounded-full border-16 border-t-surface-container-low border-surface-container-highest animate-spin" />
+          </div>
+
+          <div className="space-y-3">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="h-16 animate-pulse rounded-xl bg-surface-container-highest"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ---------------- Error ---------------- */
+
+  if (error) {
+    return (
+      <div className="rounded-xl p-6 shadow-sm">
+        <p className="text-lg font-semibold text-red-600 dark:text-red-400">
+          Failed to load chart
+        </p>
+
+        <p className="mt-2 text-sm">{error}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full rounded-2xl">
+    <div className="w-full">
+      {/* Header */}
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-semibold">Expense Breakdown</h2>
+
+          <p className="text-sm">{subtitle}</p>
+        </div>
+
+        <span className="rounded-full bg-surface-container px-3 py-1 text-xs font-medium">
+          {period}
+        </span>
+      </div>
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
         {/* Chart */}
         <div className="h-80 w-full">
@@ -73,7 +139,13 @@ export const DonutChart: FC<ExpenseDonutChartProps> = ({ data }) => {
                 />
               ) : (
                 <Pie
-                  data={[{ value: 1, fill: "#e5e7eb" }]}
+                  data={[
+                    {
+                      name: "Empty",
+                      value: 1,
+                      fill: "#2d3449",
+                    },
+                  ]}
                   dataKey="value"
                   innerRadius={72}
                   outerRadius={96}
@@ -124,51 +196,57 @@ export const DonutChart: FC<ExpenseDonutChartProps> = ({ data }) => {
               {formatCurrency(total)}
             </p>
           </div>
-          {data.map((item, index) => {
-            const percent = ((item.value / total) * 100).toFixed(1);
+          {hasData ? (
+            data.map((item, index) => {
+              const percent = ((item.value / total) * 100).toFixed(1);
 
-            const active = index === activeIndex;
+              const active = index === activeIndex;
 
-            return (
-              <button
-                key={item.name}
-                onMouseEnter={() => setActiveIndex(index)}
-                onClick={() => setActiveIndex(index)}
-                className={`flex w-full items-center justify-between rounded-xl px-4 py-3 transition-all duration-200 ${
-                  active ? "bg-primary" : "hover:bg-primary"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <span
-                    className="h-3 w-3 rounded-full"
-                    style={{
-                      backgroundColor: item.fill,
-                    }}
-                  />
+              return (
+                <button
+                  key={item.name}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onClick={() => setActiveIndex(index)}
+                  className={`flex w-full items-center justify-between rounded-xl px-4 py-3 transition-all duration-200 ${
+                    active
+                      ? "bg-surface-container-highest"
+                      : "hover:bg-surface-container-highest"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="h-3 w-3 rounded-full"
+                      style={{
+                        backgroundColor: item.fill,
+                      }}
+                    />
 
-                  <span
-                    className={`text-sm font-medium text-on-surface ${active ? "text-surface" : "hover:text-surface"}`}
-                  >
-                    {item.name}
-                  </span>
-                </div>
+                    <span className={`text-sm font-medium`}>{item.name}</span>
+                  </div>
 
-                <div className="text-right">
-                  <p
-                    className={`text-sm font-semibold text-on-surface ${active ? "text-surface" : "hover:text-surface"}`}
-                  >
-                    {formatCurrency(item.value)}
-                  </p>
+                  <div className="text-right">
+                    <p className={`text-sm font-semibold`}>
+                      {formatCurrency(item.value)}
+                    </p>
 
-                  <p
-                    className={`text-xs text-on-surface ${active ? "text-surface" : "hover:text-surface"}`}
-                  >
-                    {percent}%
-                  </p>
-                </div>
+                    <p className={`text-xs`}>{percent}%</p>
+                  </div>
+                </button>
+              );
+            })
+          ) : (
+            <div className="flex h-80 flex-col items-center justify-center rounded-xl border border-dashed border-primary p-4">
+              <p className="text-lg font-semibold">No Expense Data</p>
+
+              <p className="mt-2 text-sm text-center">
+                Add transactions to view your expense breakdown.
+              </p>
+
+              <button className="mt-5 rounded-full px-4 py-2 text-sm font-medium bg-primary text-surface hover:bg-primary-container transition-all flex items-center justify-center gap-2 group active:scale-95 duration-150">
+                Add Expense
               </button>
-            );
-          })}
+            </div>
+          )}
         </div>
       </div>
     </div>

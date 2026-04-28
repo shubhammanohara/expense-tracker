@@ -5,7 +5,7 @@ import RecentTransactionsSection from "../components/RecentTransactionsSection";
 export const Dashboard = () => {
   return (
     <div className="space-y-8 pb-10">
-      <section className="px-2">
+      <section>
         <h1 className="text-3xl font-extrabold tracking-tight">
           Good Morning, Alex Danvers
         </h1>

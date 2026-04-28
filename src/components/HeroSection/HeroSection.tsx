@@ -1,8 +1,7 @@
 import { FC, ReactNode, useCallback, useMemo, useState } from "react";
 import TimeRangeTabs from "../TimeRangeTabs/TimeRangeTabs ";
-import { DateRange, TabsData } from "@/src/types";
+import { Category, DateRange, TabsData } from "@/src/types";
 import {
-  Category,
   DATE_RANGE_MONTH,
   DATE_RANGE_TODAY,
   DATE_RANGE_WEEK,
@@ -15,6 +14,12 @@ import { ExpenseItem } from "../DonutChart/DonutChart";
 
 interface HeroSectionProps {
   children?: ReactNode;
+}
+
+interface TitleData {
+  subtitle: string;
+  value: DateRange;
+  period: string;
 }
 
 const tabs: TabsData[] = [
@@ -36,13 +41,41 @@ const tabs: TabsData[] = [
   },
 ];
 
+const titleData: TitleData[] = [
+  {
+    subtitle: "Your daily category spending",
+    value: DATE_RANGE_TODAY,
+    period: "Today",
+  },
+  {
+    subtitle: "Your weekly category spending",
+    value: DATE_RANGE_WEEK,
+    period: "This week",
+  },
+  {
+    subtitle: "Your monthly category spending",
+    value: DATE_RANGE_MONTH,
+    period: "This month",
+  },
+  {
+    subtitle: "Your yearly category spending",
+    value: DATE_RANGE_YEAR,
+    period: "This year",
+  },
+];
+
 const COLORS = ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#06b6d4"];
 
 const HeroSection: FC<HeroSectionProps> = ({ children }) => {
   const [tabsData, setTabsData] = useState<TabsData[]>(tabs);
   const [range, setRange] = useState<DateRange>("today");
+  const [title, setTitle] = useState<TitleData>(titleData[0]);
 
-  const { data: transactionData, isLoading } = useTransactions({
+  const {
+    data: transactionData,
+    isLoading,
+    error,
+  } = useTransactions({
     ...getDateFilter(range),
   });
 
@@ -59,6 +92,7 @@ const HeroSection: FC<HeroSectionProps> = ({ children }) => {
       });
     });
     setRange(value);
+    setTitle(titleData.find((data) => data.value === value) || titleData[0]);
   }, []);
 
   const chartData: ExpenseItem[] = useMemo(() => {
@@ -80,10 +114,6 @@ const HeroSection: FC<HeroSectionProps> = ({ children }) => {
     }));
   }, [transactionData]);
 
-  console.log("chartData", chartData);
-
-  if (isLoading) <div>Loading...</div>;
-
   return (
     <section className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -95,7 +125,13 @@ const HeroSection: FC<HeroSectionProps> = ({ children }) => {
       <div className="relative group">
         <div className="absolute -inset-1 bg-linear-to-r from-primary to-primary-container rounded-lg blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
         <div className="glass-card rounded-lg p-8 relative flex flex-col md:flex-row justify-between items-center gap-8">
-          <DonutChart data={chartData} />
+          <DonutChart
+            data={chartData}
+            loading={isLoading}
+            error={error?.message}
+            subtitle={title.subtitle}
+            period={title.period}
+          />
         </div>
       </div>
     </section>

@@ -1,9 +1,4 @@
-import {
-  Category,
-  PaymentMethod,
-  RecurringFrequency,
-  TransactionType,
-} from "../utils/constants";
+import { Category, PaymentMethod, Period, TransactionType } from "../types";
 import axiosInstance from "./axiosInstance";
 
 export interface Transaction {
@@ -17,7 +12,7 @@ export interface Transaction {
   paymentMethod: PaymentMethod;
   tags?: string[];
   isRecurring?: boolean;
-  recurringFrequency?: RecurringFrequency;
+  recurringFrequency?: Period;
 }
 
 export interface TransactionQuery {
