@@ -36,6 +36,8 @@ export interface PaginatedTransactions {
   };
 }
 
+export type UpdateTransactionBody = Partial<CreateTransactionBody>;
+
 export interface TransactionSummary {
   data: Partial<Record<TransactionType, { total: number; count: number }>>;
 }
@@ -58,5 +60,15 @@ export const transactionService = {
   getSummary: () =>
     axiosInstance
       .get<TransactionSummary>("/transactions/summary")
+      .then((r) => r.data),
+
+  update: (id: string, body: UpdateTransactionBody) =>
+    axiosInstance
+      .put<{ data: Transaction }>(`/transactions/${id}`, body)
+      .then((r) => r.data),
+
+  remove: (id: string) =>
+    axiosInstance
+      .delete<{ message: string }>(`/transactions/${id}`)
       .then((r) => r.data),
 };

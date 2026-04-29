@@ -22,3 +22,8 @@ export const CATEGORY_TRAVEL: Category = "travel";
 export const CATEGORY_SALARY: Category = "salary";
 export const CATEGORY_INVESTMENT: Category = "investment";
 export const CATEGORY_OTHER: Category = "other";
+
+export const PAYMENT_METHOD_CASH = "cash";
+export const PAYMENT_METHOD_CARD = "card";
+export const PAYMENT_METHOD_UPI = "upi";
+export const PAYMENT_METHOD_BANK_TRANSFER = "bank_transfer";

@@ -3,11 +3,13 @@ import {
   useMutation,
   useQueryClient,
   keepPreviousData,
+  useInfiniteQuery,
 } from "@tanstack/react-query";
 import {
   transactionService,
   TransactionQuery,
   CreateTransactionBody,
+  UpdateTransactionBody,
 } from "../api/transactionService";
 
 // ── Query keys ─────────────────────────────────────────────────────
@@ -26,6 +28,29 @@ export const useTransactions = (filters?: TransactionQuery) => {
     queryKey: transactionKeys.list(filters),
     queryFn: () => transactionService.getAll(filters),
     placeholderData: keepPreviousData, // keeps old data visible while new page loads
+  });
+};
+
+// ── GET /transactions──────────────────────────────────────────────
+
+export const useInfiniteTransactions = (filters?: TransactionQuery) => {
+  return useInfiniteQuery({
+    queryKey: transactionKeys.list(filters),
+
+    queryFn: ({ pageParam = 1 }) =>
+      transactionService.getAll({
+        ...filters,
+        page: pageParam,
+        limit: 10,
+      }),
+
+    initialPageParam: 1,
+
+    getNextPageParam: (lastPage) => {
+      const { page, pages } = lastPage.pagination;
+
+      return page < pages ? page + 1 : undefined;
+    },
   });
 };
 
@@ -49,6 +74,31 @@ export const useCreateTransaction = () => {
       transactionService.create(body),
     onSuccess: () => {
       // Invalidate list (all filter variants) + summary
+      queryClient.invalidateQueries({ queryKey: transactionKeys.all });
+      queryClient.invalidateQueries({ queryKey: transactionKeys.summary() });
+    },
+  });
+};
+
+// ── PUT /transactions/:id ──────────────────────────────────────────
+export const useUpdateTransaction = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: UpdateTransactionBody }) =>
+      transactionService.update(id, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: transactionKeys.all });
+      queryClient.invalidateQueries({ queryKey: transactionKeys.summary() });
+    },
+  });
+};
+
+// ── DELETE /transactions/:id ───────────────────────────────────────────────
+export const useDeleteTransaction = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => transactionService.remove(id),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: transactionKeys.all });
       queryClient.invalidateQueries({ queryKey: transactionKeys.summary() });
     },

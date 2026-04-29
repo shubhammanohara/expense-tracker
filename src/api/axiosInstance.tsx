@@ -7,8 +7,8 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = localStorage.getItem("access_token");
-  config.headers.Authorization = `Bearer ${import.meta.env.VITE_AUTH_TOKEN ?? token}`;
+  const token = localStorage.getItem("accessToken");
+  config.headers.Authorization = `Bearer ${token ?? import.meta.env.VITE_AUTH_TOKEN}`;
   return config;
 });
 

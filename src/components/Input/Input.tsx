@@ -1,17 +1,14 @@
 import { forwardRef, useState } from "react";
-import clsx from "clsx";
-import { twMerge } from "tailwind-merge";
 import {
   Eye,
   EyeOff,
   ChevronDown,
   ChevronUp,
   CalendarDays,
+  Search,
+  X,
 } from "lucide-react";
-
-function cn(...inputs: any[]) {
-  return twMerge(clsx(inputs));
-}
+import { cn } from "@/src/utils/common";
 
 //size 18 for md inputs
 //size 20 for lg inputs
@@ -200,3 +197,74 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
 );
 
 TextArea.displayName = "TextArea";
+
+/* =========================================
+   SEARCH BAR COMPONENT
+========================================= */
+
+type SearchBarProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  label?: string;
+  error?: string;
+  hint?: string;
+  className?: string;
+  onClear?: () => void;
+};
+
+export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
+  (
+    {
+      label,
+      error,
+      hint,
+      className,
+      onClear,
+      value,
+      placeholder = "Search...",
+      ...props
+    },
+    ref,
+  ) => {
+    const hasValue =
+      value !== undefined && value !== null && String(value).length > 0;
+
+    return (
+      <FieldWrapper label={label} error={error} hint={hint}>
+        <div className="relative">
+          {/* Left Icon */}
+          <Search
+            size={18}
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
+          />
+
+          {/* Input */}
+          <input
+            ref={ref}
+            type="search"
+            value={value}
+            placeholder={placeholder}
+            className={cn(
+              baseInputClass,
+              "h-14 pl-12 pr-12",
+              "[&::-webkit-search-cancel-button]:hidden",
+              className,
+            )}
+            {...props}
+          />
+
+          {/* Clear */}
+          {hasValue && (
+            <button
+              type="button"
+              onClick={onClear}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition"
+            >
+              <X size={18} />
+            </button>
+          )}
+        </div>
+      </FieldWrapper>
+    );
+  },
+);
+
+SearchBar.displayName = "SearchBar";

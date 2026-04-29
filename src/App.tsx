@@ -23,6 +23,7 @@ import Login from "./components/Login";
 import Button from "./components/Button";
 import Navigation from "./components/Navigation";
 import { useAuthMe } from "./hooks/useAuth";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
@@ -42,19 +43,12 @@ const App = () => {
   const activeTab = location.pathname;
 
   if (isLoading) return <div>Loading...</div>;
-  if (!user) return <Navigate to="/login" replace />;
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-surface">
-        <Login />
-      </div>
-    );
-  }
+  if (!user) navigate("/login");
 
   return (
     <div className="min-h-screen bg-surface selection:bg-primary/30 pb-32">
-      <Header />
+      {user && <Header />}
 
       <main className="pt-24 px-6 max-w-5xl mx-auto">
         <AnimatePresence mode="wait">
@@ -66,36 +60,39 @@ const App = () => {
             transition={{ duration: 0.2 }}
           >
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/history" element={<History />} />
-              <Route
-                path="/add"
-                element={
-                  <AddExpense
-                    onCancel={() => navigate("/")}
-                    onSuccess={() => navigate("/")}
-                  />
-                }
-              />
-              <Route
-                path="/settings"
-                element={
-                  <ProfileSettings
-                    theme={theme}
-                    onThemeToggle={() =>
-                      setTheme((prev) => (prev === "dark" ? "light" : "dark"))
-                    }
-                  />
-                }
-              />
+              <Route element={<ProtectedRoute isAuthenticated={!!user} />}>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/history" element={<History />} />
+                <Route
+                  path="/add"
+                  element={
+                    <AddExpense
+                      onCancel={() => navigate("/")}
+                      onSuccess={() => navigate("/")}
+                    />
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProfileSettings
+                      theme={theme}
+                      onThemeToggle={() =>
+                        setTheme((prev) => (prev === "dark" ? "light" : "dark"))
+                      }
+                    />
+                  }
+                />
 
-              <Route path="*" element={<Navigate to="/" />} />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Route>
             </Routes>
           </motion.div>
         </AnimatePresence>
       </main>
 
-      <Navigation />
+      {user && <Navigation />}
 
       {/* Floating Button */}
       {activeTab === "/" && (

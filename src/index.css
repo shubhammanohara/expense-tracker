@@ -83,3 +83,12 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   height: 100%;
   cursor: pointer;
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE / Edge */
+  scrollbar-width: none; /* Firefox */
+}
