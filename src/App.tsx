@@ -3,23 +3,33 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Home, PlusCircle, ReceiptText, Settings } from "lucide-react";
+import { PlusCircle } from "lucide-react";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+
 import Dashboard from "./screens/Dashboard";
 import History from "./screens/History";
 import AddExpense from "./screens/AddExpense";
 import ProfileSettings from "./screens/Settings";
 import Header from "./components/Header";
 import Login from "./components/Login";
-import ButtonExample from "./components/Button/ButtonExample";
+import Button from "./components/Button";
+import Navigation from "./components/Navigation";
+import { useAuthMe } from "./hooks/useAuth";
 
 const App = () => {
-  const [activeTab, setActiveTab] = useState<
-    "home" | "add" | "history" | "settings"
-  >("home");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { data: user, isLoading } = useAuthMe();
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (theme === "light") {
@@ -29,122 +39,78 @@ const App = () => {
     }
   }, [theme]);
 
-  const renderScreen = () => {
-    switch (activeTab) {
-      case "home":
-        return <Dashboard />;
-      case "history":
-        return <ButtonExample />;
-      case "add":
-        return (
-          <AddExpense
-            onCancel={() => setActiveTab("home")}
-            onSuccess={() => setActiveTab("home")}
-          />
-        );
-      case "settings":
-        return (
-          <ProfileSettings
-            theme={theme}
-            onThemeToggle={() =>
-              setTheme((prev) => (prev === "dark" ? "light" : "dark"))
-            }
-          />
-        );
-      default:
-        return <Dashboard />;
-    }
-  };
+  const activeTab = location.pathname;
+
+  if (isLoading) return <div>Loading...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-surface">
+        <Login />
+      </div>
+    );
+  }
 
   return (
-    <div
-      className={`min-h-screen bg-surface selection:bg-primary/30 ${isLoggedIn ? "pb-32" : ""}`}
-    >
-      {isLoggedIn ? (
+    <div className="min-h-screen bg-surface selection:bg-primary/30 pb-32">
+      <Header />
+
+      <main className="pt-24 px-6 max-w-5xl mx-auto">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/history" element={<History />} />
+              <Route
+                path="/add"
+                element={
+                  <AddExpense
+                    onCancel={() => navigate("/")}
+                    onSuccess={() => navigate("/")}
+                  />
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProfileSettings
+                    theme={theme}
+                    onThemeToggle={() =>
+                      setTheme((prev) => (prev === "dark" ? "light" : "dark"))
+                    }
+                  />
+                }
+              />
+
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </motion.div>
+        </AnimatePresence>
+      </main>
+
+      <Navigation />
+
+      {/* Floating Button */}
+      {activeTab === "/" && (
         <>
-          <Header />
-
-          <main className="pt-24 px-6 max-w-5xl mx-auto">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                {renderScreen()}
-              </motion.div>
-            </AnimatePresence>
-          </main>
-
-          {/* Floating Action Button (only on home) */}
-          {activeTab === "home" && (
-            <button
-              onClick={() => setActiveTab("add")}
-              className="fixed bottom-20 right-6 w-14 h-14 bg-primary text-surface rounded-full shadow-[0_12px_24px_rgba(78,222,163,0.4)] flex items-center justify-center z-50 active:scale-90 transition-transform"
-            >
-              <PlusCircle className="w-8 h-8" />
-            </button>
-          )}
-
-          {/* Bottom Navigation */}
-          <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-2 pt-2 bg-surface/40 backdrop-blur-xl rounded-t-4xl shadow-[0_-16px_32px_rgba(0,0,0,0.4)]">
-            <NavButton
-              active={activeTab === "home"}
-              onClick={() => setActiveTab("home")}
-              icon={<Home />}
-              label="Home"
-            />
-            <NavButton
-              active={activeTab === "add"}
-              onClick={() => setActiveTab("add")}
-              icon={<PlusCircle />}
-              label="Add"
-            />
-            <NavButton
-              active={activeTab === "history"}
-              onClick={() => setActiveTab("history")}
-              icon={<ReceiptText />}
-              label="History"
-            />
-            <NavButton
-              active={activeTab === "settings"}
-              onClick={() => setActiveTab("settings")}
-              icon={<Settings />}
-              label="Settings"
-            />
-          </nav>
+          <Button
+            iconOnly
+            size="lg"
+            className="fixed bottom-20 right-6 shadow-[0_12px_24px_rgba(78,222,163,0.4)] z-50"
+            onClick={() => navigate("/add")}
+          >
+            <PlusCircle size={30} />
+          </Button>
         </>
-      ) : (
-        <Login setIsLoggedIn={setIsLoggedIn} />
       )}
     </div>
-  );
-};
-
-interface NavButtonProps {
-  active: boolean;
-  onClick: () => void;
-  icon: React.ReactNode;
-  label: string;
-}
-
-const NavButton = ({ active, onClick, icon, label }: NavButtonProps) => {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex flex-1 flex-col items-center justify-center transition-all ${
-        active
-          ? "bg-primary/20 text-primary rounded-full px-5 py-2 scale-100"
-          : "text-on-surface-variant opacity-60 hover:opacity-100 scale-90"
-      }`}
-    >
-      <div>{icon}</div>
-      <span className="font-body text-[10px] font-semibold uppercase tracking-widest mt-1">
-        {label}
-      </span>
-    </button>
   );
 };
 

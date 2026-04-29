@@ -1,13 +1,33 @@
 import { useState } from "react";
 import { Eye, EyeOff, ChevronRight } from "lucide-react";
 import Button from "../Button";
+import { useLogin } from "@/src/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { Input } from "../Input";
 
-const Login = ({
-  setIsLoggedIn,
-}: {
-  setIsLoggedIn: (isLoggedIn: boolean) => void;
-}) => {
-  const [showPassword, setShowPassword] = useState(false);
+const Login = () => {
+  const [email, setEmail] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const { mutate: login, isPending, isError, error } = useLogin();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email && password) {
+      login(
+        { email, password },
+        {
+          onSuccess: () => {
+            navigate("/dashboard");
+          },
+          onError: (err) => {
+            console.error("Login failed:", err);
+          },
+        },
+      );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-surface flex items-center justify-center p-6">
@@ -39,55 +59,33 @@ const Login = ({
         <form className="mt-10 space-y-6">
           {/* Email */}
           <div>
-            <label className="mb-2 block text-sm font-semibold text-on-surface-variant">
-              Email Address
-            </label>
-
-            <input
+            <Input
+              label="Email Address"
               type="email"
               placeholder="name@company.com"
-              className="h-14 w-full rounded-lg bg-surface-container-high px-5 text-on-surface placeholder:text-on-surface-variant/50 outline-none transition focus:ring-2 focus:ring-primary/30"
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
           {/* Password */}
           <div>
-            <div className="mb-2 flex items-center justify-between">
-              <label className="text-sm font-semibold text-on-surface-variant">
-                Password
-              </label>
+            <Input
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-              <button
-                type="button"
-                className="text-sm font-semibold text-primary hover:opacity-80"
-              >
-                Forgot Password?
-              </button>
-            </div>
-
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                className="h-14 w-full rounded-lg bg-surface-container-high px-5 pr-14 text-on-surface placeholder:text-on-surface-variant/50 outline-none transition focus:ring-2 focus:ring-primary/30"
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
-              >
-                {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
-              </button>
-            </div>
+            <button
+              type="button"
+              className="absolute font-semibold text-primary hover:opacity-80"
+            >
+              Forgot Password?
+            </button>
           </div>
 
           {/* Login Button */}
-          <Button
-            onClick={() => setIsLoggedIn(true)}
-            size="lg"
-            className="w-full mt-2"
-          >
+          <Button onClick={handleSubmit} size="lg" className="w-full mt-2">
             Login <ChevronRight size={20} />
           </Button>
         </form>
