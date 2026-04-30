@@ -5,7 +5,7 @@
 
 import { PlusCircle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 import Button from "./components/Button";
@@ -21,25 +21,12 @@ import ProfileSettings from "./screens/Settings";
 
 const App = () => {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
-  const { data: user, isLoading } = useAuthMe();
-  console.log("Authenticated user:", user);
+  const { data: user, isLoading, isFetching } = useAuthMe();
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (theme === "light") {
-      document.documentElement.classList.add("light");
-    } else {
-      document.documentElement.classList.remove("light");
-    }
-  }, [theme]);
-
   const activeTab = location.pathname;
-
-  useEffect(() => {
-    if (!user && !isLoading) navigate("/login");
-  }, [user, navigate, isLoading]);
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -51,21 +38,16 @@ const App = () => {
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, y: 16, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -16, scale: 0.98 }}
           >
-            <Routes>
+            <Routes location={location}>
               {/* Public routes */}
               <Route path="/login" element={<Login />} />
 
               {/* Protected routes */}
-              <Route
-                element={
-                  <ProtectedRoute isAuthenticated={!!user} isLoading={isLoading} />
-                }
-              >
+              <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/history" element={<History />} />
                 <Route

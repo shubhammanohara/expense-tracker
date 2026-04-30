@@ -1,14 +1,16 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-interface ProtectedRouteProps {
-  isAuthenticated: boolean;
-  isLoading: boolean;
-}
+import { useAuthMe } from "@/src/hooks/useAuth";
 
-const ProtectedRoute = ({ isAuthenticated, isLoading }: ProtectedRouteProps) => {
-  if (isLoading) return <div>Loading...</div>; // or a spinner
+const ProtectedRoute = () => {
+  const { data: user, isPending, isError } = useAuthMe();
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  if (isPending) return <div>Loading...</div>;
+
+  // ✅ on error (401), redirect to login instead of looping
+  if (isError || !user) return <Navigate to="/login" replace />;
+
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

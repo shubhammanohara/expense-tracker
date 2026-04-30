@@ -25,10 +25,21 @@ const clearTokens = () => {
 export const useAuthMe = () => {
   return useQuery<AuthUser | null>({
     queryKey: authKeys.me,
-    queryFn: authService.me,
+    queryFn: async () => {
+      try {
+        return await authService.me();
+      } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const err = error as any;
+
+        if (err?.status === 401 || err?.response?.status === 401) {
+          return null; // ✅ return null instead of throwing — stops retries
+        }
+        throw error;
+      }
+    },
     staleTime: 1000 * 60 * 5, // 5 min — identity rarely changes mid-session
     retry: false, // don't retry on 401 — user is simply not authed
-    placeholderData: null,
   });
 };
 
