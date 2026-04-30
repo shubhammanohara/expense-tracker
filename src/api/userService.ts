@@ -24,13 +24,10 @@ export interface UpdateProfileBody {
 // ── Service ────────────────────────────────────────────────────────
 
 export const userService = {
-  getMe: () =>
-    axiosInstance.get<{ data: User }>("/users/me").then((r) => r.data.data),
+  getMe: () => axiosInstance.get<{ data: User }>("/users/me").then((r) => r.data.data),
 
   updateMe: (body: UpdateProfileBody) =>
-    axiosInstance
-      .patch<{ data: User }>("/users/me", body)
-      .then((r) => r.data.data),
+    axiosInstance.patch<{ data: User }>("/users/me", body).then((r) => r.data.data),
 
   deleteMe: () => axiosInstance.delete("/users/me").then((r) => r.data),
 };

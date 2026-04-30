@@ -3,8 +3,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { format, parseISO } from "date-fns";
+import {
+  Bolt,
+  BookOpen,
+  Car,
+  ChevronRight,
+  CircleHelp,
+  Clipboard,
+  Hamburger,
+  Heart,
+  Home,
+  IndianRupee,
+  PiggyBank,
+  Plane,
+  ShoppingBag,
+} from "lucide-react";
 import { FC } from "react";
+
 import { Transaction } from "../api/transactionService";
+import { PaymentMethod } from "../types";
 import {
   CATEGORY_EDUCATION,
   CATEGORY_ENTERTAINMENT,
@@ -23,24 +41,7 @@ import {
   PAYMENT_METHOD_CASH,
   PAYMENT_METHOD_UPI,
 } from "../utils/constants";
-import {
-  Bolt,
-  BookOpen,
-  Car,
-  ChevronRight,
-  CircleHelp,
-  Clipboard,
-  Hamburger,
-  Heart,
-  Home,
-  IndianRupee,
-  PiggyBank,
-  Plane,
-  ShoppingBag,
-} from "lucide-react";
-import { parseISO, format } from "date-fns";
 import Button from "./Button";
-import { PaymentMethod } from "../types";
 
 interface TransactionCardProps {
   transaction: Transaction;
@@ -115,11 +116,7 @@ export const TransactionCard: FC<TransactionCardProps> = ({
           <p
             className={`text-xs text-on-surface-variant text-ellipsis overflow-hidden whitespace-nowrap`}
           >
-            {
-              PAYMENT_METHODS.find(
-                (pm) => pm.value === transaction.paymentMethod,
-              )?.label
-            }
+            {PAYMENT_METHODS.find((pm) => pm.value === transaction.paymentMethod)?.label}
           </p>
         </div>
         <ChevronRight

@@ -15,9 +15,7 @@ const ErrorCard: FC<ErrorCardProps> = ({
   className = "",
 }) => {
   return (
-    <div
-      className={`p-6 min-h-80 flex items-center justify-center w-full ${className}`}
-    >
+    <div className={`p-6 min-h-80 flex items-center justify-center w-full ${className}`}>
       <div className="text-center space-y-5">
         {/* Icon */}
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/15">

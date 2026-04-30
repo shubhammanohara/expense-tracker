@@ -1,23 +1,24 @@
-import { useState } from "react";
-import { ArrowLeft, CheckCircle, Trash } from "lucide-react";
 import { format } from "date-fns";
-import { Category, PaymentMethod, TransactionType } from "../types";
-import { Input, Select, TextArea } from "../components/Input";
-import Button from "../components/Button";
+import { ArrowLeft, CheckCircle, Trash } from "lucide-react";
+import { useState } from "react";
+
+import { Transaction } from "../api/transactionService";
 import AmountInput from "../components/AmountInput";
+import Button from "../components/Button";
 import CategoryPicker from "../components/CategoryPicker";
+import { Input, Select, TextArea } from "../components/Input";
 import {
   useCreateTransaction,
   useDeleteTransaction,
   useUpdateTransaction,
 } from "../hooks/useTransaction";
+import { Category, PaymentMethod, TransactionType } from "../types";
 import {
   PAYMENT_METHOD_BANK_TRANSFER,
   PAYMENT_METHOD_CARD,
   PAYMENT_METHOD_CASH,
   PAYMENT_METHOD_UPI,
 } from "../utils/constants";
-import { Transaction } from "../api/transactionService";
 
 interface AddExpenseProps {
   onCancel: () => void;
@@ -37,16 +38,10 @@ const paymentOptions = PAYMENT_METHODS.map((m) => ({
   value: m.value,
 }));
 
-export const AddExpense = ({
-  onCancel,
-  onSuccess,
-  transaction,
-}: AddExpenseProps) => {
+export const AddExpense = ({ onCancel, onSuccess, transaction }: AddExpenseProps) => {
   const isEditing = !!transaction;
 
-  const [amount, setAmount] = useState(
-    isEditing ? transaction.amount.toString() : "",
-  );
+  const [amount, setAmount] = useState(isEditing ? transaction.amount.toString() : "");
   const [category, setCategory] = useState<Category | null>(
     isEditing ? transaction.category : null,
   );
@@ -54,23 +49,16 @@ export const AddExpense = ({
     isEditing ? transaction.paymentMethod : "",
   );
   const [date, setDate] = useState(
-    format(
-      isEditing ? new Date(transaction.date) : new Date(),
-      "yyyy-MM-dd'T'HH:mm",
-    ),
+    format(isEditing ? new Date(transaction.date) : new Date(), "yyyy-MM-dd'T'HH:mm"),
   );
-  const [merchant, setMerchant] = useState<string>(
-    isEditing ? transaction.merchant : "",
-  );
+  const [merchant, setMerchant] = useState<string>(isEditing ? transaction.merchant : "");
   const [description, setDescription] = useState(
     isEditing ? transaction.description : "",
   );
 
   const { mutate: createTransaction, isPending } = useCreateTransaction();
-  const { mutate: updateTransaction, isPending: isUpdating } =
-    useUpdateTransaction();
-  const { mutate: deleteTransaction, isPending: isDeleting } =
-    useDeleteTransaction();
+  const { mutate: updateTransaction, isPending: isUpdating } = useUpdateTransaction();
+  const { mutate: deleteTransaction, isPending: isDeleting } = useDeleteTransaction();
 
   const handleSubmit = () => {
     if (!amount || !category || !paymentMethod) return;
@@ -104,9 +92,7 @@ export const AddExpense = ({
           <ArrowLeft size={18} />
         </Button>
         {isEditing && (
-          <span className="font-headline text-lg font-bold">
-            Edit Transaction
-          </span>
+          <span className="font-headline text-lg font-bold">Edit Transaction</span>
         )}
       </header>
 

@@ -1,10 +1,6 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  authService,
-  RegisterBody,
-  LoginBody,
-  AuthUser,
-} from "../api/authService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { authService, AuthUser, LoginBody, RegisterBody } from "../api/authService";
 
 // ── Query Keys ─────────────────────────────────────────────────────
 

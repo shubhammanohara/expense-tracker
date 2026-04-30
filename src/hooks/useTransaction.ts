@@ -1,14 +1,15 @@
 import {
-  useQuery,
-  useMutation,
-  useQueryClient,
   keepPreviousData,
   useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
+
 import {
-  transactionService,
-  TransactionQuery,
   CreateTransactionBody,
+  TransactionQuery,
+  transactionService,
   UpdateTransactionBody,
 } from "../api/transactionService";
 
@@ -16,8 +17,7 @@ import {
 
 export const transactionKeys = {
   all: ["transactions"] as const,
-  list: (filters?: TransactionQuery) =>
-    ["transactions", "list", filters] as const,
+  list: (filters?: TransactionQuery) => ["transactions", "list", filters] as const,
   summary: () => ["transactions", "summary"] as const,
 };
 
@@ -70,8 +70,7 @@ export const useCreateTransaction = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (body: CreateTransactionBody) =>
-      transactionService.create(body),
+    mutationFn: (body: CreateTransactionBody) => transactionService.create(body),
     onSuccess: () => {
       // Invalidate list (all filter variants) + summary
       queryClient.invalidateQueries({ queryKey: transactionKeys.all });

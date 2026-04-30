@@ -53,14 +53,10 @@ export const transactionService = {
       .then((r) => r.data),
 
   create: (body: CreateTransactionBody) =>
-    axiosInstance
-      .post<{ data: Transaction }>("/transactions", body)
-      .then((r) => r.data),
+    axiosInstance.post<{ data: Transaction }>("/transactions", body).then((r) => r.data),
 
   getSummary: () =>
-    axiosInstance
-      .get<TransactionSummary>("/transactions/summary")
-      .then((r) => r.data),
+    axiosInstance.get<TransactionSummary>("/transactions/summary").then((r) => r.data),
 
   update: (id: string, body: UpdateTransactionBody) =>
     axiosInstance
@@ -68,7 +64,5 @@ export const transactionService = {
       .then((r) => r.data),
 
   remove: (id: string) =>
-    axiosInstance
-      .delete<{ message: string }>(`/transactions/${id}`)
-      .then((r) => r.data),
+    axiosInstance.delete<{ message: string }>(`/transactions/${id}`).then((r) => r.data),
 };

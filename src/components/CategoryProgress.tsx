@@ -4,13 +4,10 @@
  */
 
 import * as Icons from "lucide-react";
+
 import { Categories } from "../data";
 
-export default function CategoryProgress({
-  category,
-}: {
-  category: Categories;
-}) {
+export default function CategoryProgress({ category }: { category: Categories }) {
   const IconComponent = (Icons as any)[category.icon] || Icons.CircleHelp;
 
   const colors: Record<string, string> = {

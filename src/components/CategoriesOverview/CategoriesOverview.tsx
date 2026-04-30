@@ -1,5 +1,7 @@
-import { CATEGORIES } from "@/src/data";
 import { FC } from "react";
+
+import { CATEGORIES } from "@/src/data";
+
 import CategoryProgress from "../CategoryProgress";
 
 // Not in use yet maybe not needed at all, will decide later based on how the trends section looks with the chart and tabs

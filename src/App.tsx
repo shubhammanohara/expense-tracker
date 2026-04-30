@@ -3,31 +3,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import { PlusCircle } from "lucide-react";
-import {
-  Routes,
-  Route,
-  Navigate,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useState } from "react";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
-import Dashboard from "./screens/Dashboard";
-import History from "./screens/History";
-import AddExpense from "./screens/AddExpense";
-import ProfileSettings from "./screens/Settings";
+import Button from "./components/Button";
 import Header from "./components/Header";
 import Login from "./components/Login";
-import Button from "./components/Button";
 import Navigation from "./components/Navigation";
-import { useAuthMe } from "./hooks/useAuth";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { useAuthMe } from "./hooks/useAuth";
+import AddExpense from "./screens/AddExpense";
+import Dashboard from "./screens/Dashboard";
+import History from "./screens/History";
+import ProfileSettings from "./screens/Settings";
 
 const App = () => {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const { data: user, isLoading } = useAuthMe();
+  console.log("Authenticated user:", user);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -42,11 +37,11 @@ const App = () => {
 
   const activeTab = location.pathname;
 
-  if (isLoading) return <div>Loading...</div>;
-
   useEffect(() => {
-    if (!user) navigate("/login");
-  }, [user, navigate]);
+    if (!user && !isLoading) navigate("/login");
+  }, [user, navigate, isLoading]);
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="min-h-screen bg-surface selection:bg-primary/30 pb-32">
@@ -66,7 +61,11 @@ const App = () => {
               <Route path="/login" element={<Login />} />
 
               {/* Protected routes */}
-              <Route element={<ProtectedRoute isAuthenticated={!!user} />}>
+              <Route
+                element={
+                  <ProtectedRoute isAuthenticated={!!user} isLoading={isLoading} />
+                }
+              >
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/history" element={<History />} />
                 <Route

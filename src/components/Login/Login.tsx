@@ -1,8 +1,10 @@
-import { useState } from "react";
 import { ChevronRight } from "lucide-react";
-import Button from "../Button";
-import { useLogin, useRegister } from "@/src/hooks/useAuth";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { useLogin, useRegister } from "@/src/hooks/useAuth";
+
+import Button from "../Button";
 import { Input } from "../Input";
 
 const Login = () => {
@@ -102,9 +104,7 @@ const Login = () => {
 
             {!isRegister && (
               <div className="mt-2 text-sm">
-                <span className="text-on-surface-variant">
-                  Trouble signing in?
-                </span>
+                <span className="text-on-surface-variant">Trouble signing in?</span>
 
                 <button
                   type="button"
@@ -117,12 +117,7 @@ const Login = () => {
           </div>
 
           {/* Submit Button */}
-          <Button
-            type="submit"
-            size="lg"
-            className="w-full mt-2"
-            disabled={isPending}
-          >
+          <Button type="submit" size="lg" className="w-full mt-2" disabled={isPending}>
             {isPending ? "Please wait..." : isRegister ? "Register" : "Login"}{" "}
             <ChevronRight size={20} />
           </Button>

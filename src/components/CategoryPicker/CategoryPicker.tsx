@@ -1,10 +1,9 @@
-import { ReactElement } from "react";
-import { Category } from "../../types";
 import {
   Bolt,
   BookOpen,
   Car,
   CircleHelp,
+  Clipboard,
   Hamburger,
   Heart,
   Home,
@@ -12,8 +11,10 @@ import {
   PiggyBank,
   Plane,
   ShoppingBag,
-  Clipboard,
 } from "lucide-react";
+import { ReactElement } from "react";
+
+import { Category } from "../../types";
 
 const categoryConfig: {
   value: Category;
@@ -67,10 +68,7 @@ interface CategoryPickerProps {
   onChange: (cat: Category) => void;
 }
 
-export default function CategoryPicker({
-  value,
-  onChange,
-}: CategoryPickerProps) {
+export default function CategoryPicker({ value, onChange }: CategoryPickerProps) {
   return (
     <section>
       <h2 className="font-headline text-lg font-bold mb-4 px-2">Category</h2>

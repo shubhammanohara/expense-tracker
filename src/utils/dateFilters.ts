@@ -1,10 +1,5 @@
-import {
-  startOfDay,
-  startOfWeek,
-  startOfMonth,
-  startOfYear,
-  format,
-} from "date-fns";
+import { format, startOfDay, startOfMonth, startOfWeek, startOfYear } from "date-fns";
+
 import { DateRange, Period } from "../types";
 
 const toDateStr = (d: Date) => format(d, "yyyy-MM-dd");

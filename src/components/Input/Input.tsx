@@ -1,13 +1,14 @@
-import { forwardRef, useState } from "react";
 import {
-  Eye,
-  EyeOff,
+  CalendarDays,
   ChevronDown,
   ChevronUp,
-  CalendarDays,
+  Eye,
+  EyeOff,
   Search,
   X,
 } from "lucide-react";
+import { forwardRef, useState } from "react";
+
 import { cn } from "@/src/utils/common";
 
 //size 18 for md inputs
@@ -64,8 +65,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const isPassword = type === "password";
 
-    const isDateField =
-      type === "date" || type === "datetime-local" || type === "month";
+    const isDateField = type === "date" || type === "datetime-local" || type === "month";
 
     const finalType = isPassword && showPassword ? "text" : type;
 
@@ -119,15 +119,7 @@ type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> &
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   (
-    {
-      label,
-      error,
-      hint,
-      className,
-      options,
-      placeholder = "Select option",
-      ...props
-    },
+    { label, error, hint, className, options, placeholder = "Select option", ...props },
     ref,
   ) => {
     const [open, setOpen] = useState<boolean>(false);
@@ -136,11 +128,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         <div className="relative">
           <select
             ref={ref}
-            className={cn(
-              baseInputClass,
-              "h-14 appearance-none pr-12",
-              className,
-            )}
+            className={cn(baseInputClass, "h-14 appearance-none pr-12", className)}
             defaultValue=""
             onFocus={() => setOpen(true)}
             onBlur={() => setOpen(false)}
@@ -224,8 +212,7 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     },
     ref,
   ) => {
-    const hasValue =
-      value !== undefined && value !== null && String(value).length > 0;
+    const hasValue = value !== undefined && value !== null && String(value).length > 0;
 
     return (
       <FieldWrapper label={label} error={error} hint={hint}>

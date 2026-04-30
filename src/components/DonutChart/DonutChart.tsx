@@ -1,7 +1,8 @@
 import { FC, useMemo, useState } from "react";
-import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
+import { Pie, PieChart, ResponsiveContainer, Sector } from "recharts";
 
 import { Category } from "@/src/types";
+
 import ErrorCard from "../ErrorCard/";
 
 export interface ExpenseItem {
@@ -43,14 +44,9 @@ export const DonutChart: FC<ExpenseDonutChartProps> = ({
 
   const hasData = data.length > 0;
 
-  const total = useMemo(
-    () => data.reduce((sum, item) => sum + item.value, 0),
-    [data],
-  );
+  const total = useMemo(() => data.reduce((sum, item) => sum + item.value, 0), [data]);
 
-  const activeItem = hasData
-    ? data[Math.min(activeIndex, data.length - 1)]
-    : null;
+  const activeItem = hasData ? data[Math.min(activeIndex, data.length - 1)] : null;
 
   const activePercent =
     activeItem?.value && ((activeItem?.value / total) * 100).toFixed(1);
@@ -123,9 +119,7 @@ export const DonutChart: FC<ExpenseDonutChartProps> = ({
                     return (
                       <Sector
                         {...props}
-                        outerRadius={
-                          isActive ? props.outerRadius + 8 : props.outerRadius
-                        }
+                        outerRadius={isActive ? props.outerRadius + 8 : props.outerRadius}
                       />
                     );
                   }}

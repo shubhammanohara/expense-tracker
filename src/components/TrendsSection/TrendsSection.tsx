@@ -1,19 +1,19 @@
 import React, { useCallback, useMemo, useState } from "react";
 
+import { useTransactions } from "@/src/hooks/useTransaction";
 import { DateRange, Period, TabsData } from "@/src/types";
-import TrendsChart from "../TrendsChart";
-import TimeRangeTabs from "../TimeRangeTabs/TimeRangeTabs ";
 // import CategoriesOverview from "../CategoriesOverview";
-
 import {
   PERIOD_DAILY,
   PERIOD_MONTHLY,
   PERIOD_WEEKLY,
   PERIOD_YEARLY,
 } from "@/src/utils/constants";
-import { useTransactions } from "@/src/hooks/useTransaction";
 import { getDateFilter } from "@/src/utils/dateFilters";
 import { groupTransactions } from "@/src/utils/groupTransactions";
+
+import TimeRangeTabs from "../TimeRangeTabs/TimeRangeTabs ";
+import TrendsChart from "../TrendsChart";
 
 interface TitleData {
   title: string;

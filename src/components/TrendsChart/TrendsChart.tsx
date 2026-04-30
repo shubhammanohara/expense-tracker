@@ -1,14 +1,16 @@
-import { Period } from "@/src/types";
 import { useMemo } from "react";
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
 } from "recharts";
+
+import { Period } from "@/src/types";
+
 import ErrorCard from "../ErrorCard";
 
 type ExpenseBarItem = {
@@ -80,14 +82,10 @@ export default function ExpenseBarChart({
 }: Props) {
   const hasData = data.length > 0;
 
-  const total = useMemo(
-    () => data.reduce((sum, item) => sum + item.amount, 0),
-    [data],
-  );
+  const total = useMemo(() => data.reduce((sum, item) => sum + item.amount, 0), [data]);
 
   const highest = useMemo(
-    () =>
-      data.reduce((max, item) => (item.amount > max ? item.amount : max), 0),
+    () => data.reduce((max, item) => (item.amount > max ? item.amount : max), 0),
     [data],
   );
 
@@ -99,10 +97,7 @@ export default function ExpenseBarChart({
         <div className="mb-5 h-6 w-44 animate-pulse bg-surface-container-highest" />
 
         <div className="h-80">
-          <div
-            className="flex h-full items-end gap-3"
-            bg-surface-container-highest
-          >
+          <div className="flex h-full items-end gap-3" bg-surface-container-highest>
             {[40, 65, 30, 80, 55, 95, 70].map((height, i) => (
               <div
                 key={i}

@@ -15,9 +15,7 @@ export default function AmountInput({
         Total Expense
       </label>
       <div className="flex items-center justify-center gap-1">
-        <span className="text-3xl font-headline font-bold text-primary-container">
-          ₹
-        </span>
+        <span className="text-3xl font-headline font-bold text-primary-container">₹</span>
         <input
           className="bg-transparent border-none text-6xl md:text-7xl font-headline font-extrabold tracking-tight text-on-surface focus:ring-0 w-full max-w-[280px] text-center p-0"
           placeholder="0.00"

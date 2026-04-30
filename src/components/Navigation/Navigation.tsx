@@ -1,6 +1,7 @@
 import { Home, PlusCircle, ReceiptText, Settings } from "lucide-react";
-import NavButton from "./NavButton";
 import { useLocation, useNavigate } from "react-router-dom";
+
+import NavButton from "./NavButton";
 
 const Navigation = () => {
   const location = useLocation();

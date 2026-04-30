@@ -1,4 +1,5 @@
-import { Plus, Trash2, ArrowRight, Settings } from "lucide-react";
+import { ArrowRight, Plus, Settings, Trash2 } from "lucide-react";
+
 import Button from "./Button";
 
 export default function Example() {

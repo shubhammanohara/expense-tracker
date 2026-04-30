@@ -1,14 +1,12 @@
 import { FC } from "react";
-import TransactionCard from "../TransactionCard";
+
 import { useTransactions } from "@/src/hooks/useTransaction";
+
 import ErrorCard from "../ErrorCard";
+import TransactionCard from "../TransactionCard";
 
 const RecentTransactionsSection: FC = () => {
-  const {
-    data: transactionData,
-    isLoading,
-    error,
-  } = useTransactions({ limit: 5 });
+  const { data: transactionData, isLoading, error } = useTransactions({ limit: 5 });
 
   if (isLoading) {
     <div className="space-y-3">

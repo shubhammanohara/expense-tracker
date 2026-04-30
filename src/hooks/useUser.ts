@@ -1,5 +1,6 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { userService, UpdateProfileBody } from "../api/userService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { UpdateProfileBody, userService } from "../api/userService";
 
 export const userKeys = {
   me: ["user", "me"] as const,

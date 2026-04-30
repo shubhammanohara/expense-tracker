@@ -1,10 +1,11 @@
-import { useRef, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import TransactionCard from "../components/TransactionCard";
-import { useInfiniteTransactions } from "../hooks/useTransaction";
+import { useEffect, useRef, useState } from "react";
+
 import { Transaction } from "../api/transactionService";
 import FilterPills from "../components/FilterPills";
 import { SearchBar } from "../components/Input/Input";
+import TransactionCard from "../components/TransactionCard";
+import { useInfiniteTransactions } from "../hooks/useTransaction";
 import { AddExpense } from "./AddExpense";
 
 function groupByDate(txns: Transaction[]) {
@@ -23,18 +24,11 @@ function groupByDate(txns: Transaction[]) {
 
 export default function History() {
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const [editingTransaction, setEditingTransaction] =
-    useState<Transaction | null>(null);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    isError,
-  } = useInfiniteTransactions();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } =
+    useInfiniteTransactions();
 
   // Flatten all pages into one list
   const transactions = data?.pages.flatMap((p) => p.data) ?? [];
@@ -76,10 +70,7 @@ export default function History() {
           History
         </h1>
         {/* Search */}
-        <SearchBar
-          label="Search Transactions"
-          placeholder="Food, UPI, Travel..."
-        />
+        <SearchBar label="Search Transactions" placeholder="Food, UPI, Travel..." />
       </section>
       {/* Filters */}
       <FilterPills />
@@ -119,9 +110,7 @@ export default function History() {
       </div>
       {/* Sentinel — sits at the bottom, watched by the observer */}
       <div ref={sentinelRef} className="flex justify-center py-6">
-        {isFetchingNextPage && (
-          <Loader2 className="w-6 h-6 animate-spin text-primary" />
-        )}
+        {isFetchingNextPage && <Loader2 className="w-6 h-6 animate-spin text-primary" />}
         {!hasNextPage && transactions.length > 0 && !isLoading && (
           <p className="text-xs text-on-surface-variant/50 font-medium">
             All {data?.pages[0].pagination.total} transactions loaded

@@ -41,9 +41,7 @@ export interface GenerateApiKeyResponse {
 
 export const authService = {
   register: (body: RegisterBody) =>
-    axiosInstance
-      .post<AuthResponse>("/auth/register", body)
-      .then((r) => r.data),
+    axiosInstance.post<AuthResponse>("/auth/register", body).then((r) => r.data),
 
   login: (body: LoginBody) =>
     axiosInstance.post<AuthResponse>("/auth/login", body).then((r) => r.data),
@@ -54,8 +52,7 @@ export const authService = {
   logout: () =>
     axiosInstance.post<{ message: string }>("/auth/logout").then((r) => r.data),
 
-  me: () =>
-    axiosInstance.get<{ data: AuthUser }>("/auth/me").then((r) => r.data.data),
+  me: () => axiosInstance.get<{ data: AuthUser }>("/auth/me").then((r) => r.data.data),
 
   generateApiKey: () =>
     axiosInstance
@@ -63,7 +60,5 @@ export const authService = {
       .then((r) => r.data),
 
   revokeApiKey: () =>
-    axiosInstance
-      .post<{ message: string }>("/auth/api-key/revoke")
-      .then((r) => r.data),
+    axiosInstance.post<{ message: string }>("/auth/api-key/revoke").then((r) => r.data),
 };

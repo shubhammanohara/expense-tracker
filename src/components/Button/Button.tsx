@@ -1,7 +1,7 @@
-import { forwardRef } from "react";
 import clsx from "clsx";
-import { twMerge } from "tailwind-merge";
 import { Loader2 } from "lucide-react";
+import { forwardRef } from "react";
+import { twMerge } from "tailwind-merge";
 
 {
   /* For your current button sizes:
