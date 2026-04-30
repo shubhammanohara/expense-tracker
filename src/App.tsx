@@ -5,7 +5,7 @@
 
 import { PlusCircle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 import Button from "./components/Button";
@@ -20,13 +20,23 @@ import History from "./screens/History";
 import ProfileSettings from "./screens/Settings";
 
 const App = () => {
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
-  const { data: user, isLoading, isFetching } = useAuthMe();
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    const saved = localStorage.getItem("theme");
+    return (saved as "dark" | "light") || "dark";
+  });
+  const { data: user, isLoading } = useAuthMe();
 
   const location = useLocation();
   const navigate = useNavigate();
 
   const activeTab = location.pathname;
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle("dark", theme === "dark");
+    root.classList.toggle("light", theme === "light");
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   if (isLoading) return <div>Loading...</div>;
 
