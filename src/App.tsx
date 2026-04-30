@@ -44,7 +44,9 @@ const App = () => {
 
   if (isLoading) return <div>Loading...</div>;
 
-  if (!user) navigate("/login");
+  useEffect(() => {
+    if (!user) navigate("/login");
+  }, [user, navigate]);
 
   return (
     <div className="min-h-screen bg-surface selection:bg-primary/30 pb-32">
@@ -60,9 +62,12 @@ const App = () => {
             transition={{ duration: 0.2 }}
           >
             <Routes>
+              {/* Public routes */}
+              <Route path="/login" element={<Login />} />
+
+              {/* Protected routes */}
               <Route element={<ProtectedRoute isAuthenticated={!!user} />}>
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/login" element={<Login />} />
                 <Route path="/history" element={<History />} />
                 <Route
                   path="/add"

@@ -1,5 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { authService, RegisterBody, LoginBody } from "../api/authService";
+import {
+  authService,
+  RegisterBody,
+  LoginBody,
+  AuthUser,
+} from "../api/authService";
 
 // ── Query Keys ─────────────────────────────────────────────────────
 
@@ -22,11 +27,12 @@ const clearTokens = () => {
 // ── GET /auth/me ───────────────────────────────────────────────────
 
 export const useAuthMe = () => {
-  return useQuery({
+  return useQuery<AuthUser | null>({
     queryKey: authKeys.me,
     queryFn: authService.me,
     staleTime: 1000 * 60 * 5, // 5 min — identity rarely changes mid-session
     retry: false, // don't retry on 401 — user is simply not authed
+    placeholderData: null,
   });
 };
 
