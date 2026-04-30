@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import Button from "../Button";
-import { useAuthMe, useLogin, useRegister } from "@/src/hooks/useAuth";
+import { useLogin, useRegister } from "@/src/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { Input } from "../Input";
 
@@ -16,13 +16,8 @@ const Login = () => {
 
   const { mutate: login, isPending: loginLoading } = useLogin();
   const { mutate: register, isPending: registerLoading } = useRegister();
-  const { data: user, isLoading } = useAuthMe();
 
-  const isPending = loginLoading || registerLoading || isLoading;
-
-  useEffect(() => {
-    if (user) navigate("/");
-  }, [user, navigate]);
+  const isPending = loginLoading || registerLoading;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
