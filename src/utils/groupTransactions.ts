@@ -14,7 +14,7 @@ const DAILY_SLOTS = [
   { label: "9PM", start: 21, end: 24 },
 ];
 
-const WEEK_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WEEK_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTHS = [
   "Jan",
   "Feb",
@@ -54,7 +54,8 @@ export const groupTransactions = (
     case "weekly": {
       const weeklyMap = Object.fromEntries(WEEK_DAYS.map((d) => [d, 0]));
       transactions.forEach((t) => {
-        const day = WEEK_DAYS[new Date(t.date).getDay()];
+        const dayIndex = new Date(t.date).getDay(); // 0 = Sun
+        const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][dayIndex];
         weeklyMap[day] += t.amount;
       });
       return WEEK_DAYS.map((d) => ({ label: d, amount: weeklyMap[d] }));
