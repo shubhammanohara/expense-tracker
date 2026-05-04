@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, formatISO } from "date-fns";
 import { ArrowLeft, CheckCircle, Trash } from "lucide-react";
 import { useState } from "react";
 
@@ -68,7 +68,7 @@ export const AddExpense = ({ onCancel, onSuccess, transaction }: AddExpenseProps
       type: "expense" as TransactionType,
       category,
       paymentMethod: paymentMethod as PaymentMethod,
-      date: new Date(date).toISOString(),
+      date: formatISO(new Date(date)),
       description,
       merchant,
     };

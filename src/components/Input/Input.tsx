@@ -75,7 +75,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             type={finalType}
-            className={cn(baseInputClass, isPassword && "pr-14", className)}
+            className={cn(
+              baseInputClass,
+              "w-full min-w-0 appearance-none",
+              isPassword && "pr-14",
+              className,
+            )}
             {...props}
           />
           {isPassword && (
@@ -216,7 +221,7 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
 
     return (
       <FieldWrapper label={label} error={error} hint={hint}>
-        <div className="relative">
+        <div className="relative w-full min-w-0">
           {/* Left Icon */}
           <Search
             size={18}

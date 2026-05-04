@@ -1,7 +1,7 @@
 import { FC, ReactNode, useCallback, useMemo, useState } from "react";
 
 import { useTransactions } from "@/src/hooks/useTransaction";
-import { Category, DateRange, TabsData } from "@/src/types";
+import { Category, DateRange, Period, TabsData } from "@/src/types";
 import {
   DATE_RANGE_MONTH,
   DATE_RANGE_TODAY,
@@ -81,7 +81,7 @@ const HeroSection: FC<HeroSectionProps> = ({ children }) => {
     ...getDateFilter(range),
   });
 
-  const onTabChange = useCallback((value: DateRange) => {
+  const onTabChange = useCallback((value: DateRange | Period) => {
     setTabsData((prev) => {
       return prev.map((data) => {
         if (data.value === value) {
@@ -93,7 +93,7 @@ const HeroSection: FC<HeroSectionProps> = ({ children }) => {
         return { ...data, isActive: false };
       });
     });
-    setRange(value);
+    setRange(value as DateRange);
     setTitle(titleData.find((data) => data.value === value) || titleData[0]);
   }, []);
 

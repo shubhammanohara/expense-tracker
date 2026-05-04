@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { useTransactions } from "@/src/hooks/useTransaction";
 import { DateRange, Period, TabsData } from "@/src/types";
@@ -23,11 +23,11 @@ interface TitleData {
 }
 
 const tabs: TabsData[] = [
-  { value: PERIOD_DAILY, label: "Daily", isActive: true },
+  { value: PERIOD_DAILY, label: "Daily", isActive: false },
   {
     value: PERIOD_WEEKLY,
     label: "Weekly",
-    isActive: false,
+    isActive: true,
   },
   {
     value: PERIOD_MONTHLY,
@@ -71,7 +71,7 @@ const titleData: TitleData[] = [
 const TrendsSection = () => {
   const [tabsData, setTabsData] = useState<TabsData[]>(tabs);
   const [period, setPeriod] = useState<Period>(PERIOD_WEEKLY);
-  const [title, setTitle] = useState<TitleData>(titleData[0]);
+  const [title, setTitle] = useState<TitleData>(titleData[1]);
   const {
     data: transactionData,
     isLoading,

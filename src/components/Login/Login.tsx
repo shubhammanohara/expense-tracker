@@ -46,7 +46,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface flex items-center justify-center p-6">
+    <div className="min-h-screen bg-surface flex items-center justify-center">
       {/* Background Glow */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <div className="absolute top-10 left-10 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />

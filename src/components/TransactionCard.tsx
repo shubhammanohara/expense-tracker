@@ -92,12 +92,12 @@ export const TransactionCard: FC<TransactionCardProps> = ({
       onClick={() => onEdit?.(transaction)}
       className="glass-card p-4 rounded-lg flex items-center justify-between group transition-all hover:bg-surface-container-high/60 cursor-pointer border border-transparent hover:border-outline-variant/10"
     >
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center text-primary transition-transform group-hover:scale-110">
+      <div className="flex items-center gap-4 flex-1 min-w-0">
+        <div className="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center text-primary transition-transform group-hover:scale-110 shrink-0">
           <Icon transaction={transaction} />
         </div>
-        <div>
-          <p className="font-bold text-on-surface">{transaction.merchant}</p>
+        <div className="min-w-0">
+          <p className="font-bold text-on-surface truncate">{transaction.merchant}</p>
           <p className="text-xs text-on-surface-variant font-medium">
             {transaction.category}
           </p>
@@ -106,7 +106,7 @@ export const TransactionCard: FC<TransactionCardProps> = ({
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-4 ml-4">
+      <div className="flex items-center gap-4 ml-4 shrink-0">
         <div className="text-right">
           <p
             className={`font-bold ${isIncome ? "text-primary" : "text-on-surface"} text-ellipsis overflow-hidden whitespace-nowrap`}

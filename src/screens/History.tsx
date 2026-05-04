@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -11,12 +12,7 @@ import { AddExpense } from "./AddExpense";
 function groupByDate(txns: Transaction[]) {
   const groups: Record<string, Transaction[]> = {};
   for (const t of txns) {
-    const label = new Date(t.date).toLocaleDateString("en-US", {
-      year: "numeric",
-      weekday: "long",
-      month: "short",
-      day: "numeric",
-    });
+    const label = format(new Date(t.date), "EEEE, MMM d, yyyy");
     (groups[label] ??= []).push(t);
   }
   return groups;
@@ -32,6 +28,7 @@ export default function History() {
 
   // Flatten all pages into one list
   const transactions = data?.pages.flatMap((p) => p.data) ?? [];
+
   const grouped = groupByDate(transactions);
 
   // IntersectionObserver triggers next page fetch
