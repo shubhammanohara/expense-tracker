@@ -34,7 +34,8 @@ axiosInstance.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url.includes("/auth/refresh")
+      !originalRequest.url.includes("/auth/refresh") &&
+      localStorage.getItem("accessToken")
     ) {
       if (isRefreshing) {
         // Queue requests that come in while refresh is in progress
