@@ -24,6 +24,7 @@ export interface TransactionQuery {
   startDate?: string; // "YYYY-MM-DD"
   endDate?: string;
   tags?: string; // comma-separated
+  tz?: string; // timezone, e.g. "America/New_York"
 }
 
 export interface PaginatedTransactions {
