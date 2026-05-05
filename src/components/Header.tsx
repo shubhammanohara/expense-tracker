@@ -16,7 +16,7 @@ export default function Header() {
       const currentScrollY = window.scrollY;
 
       // ignore tiny scrolls (prevents jitter)
-      if (Math.abs(currentScrollY - lastScrollY) < 8) return;
+      if (Math.abs(currentScrollY - lastScrollY) < 32) return;
 
       if (currentScrollY > lastScrollY) {
         // scrolling DOWN → hide
