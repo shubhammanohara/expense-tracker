@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import { getUserTimezone } from "../utils/timezone";
 
 /* ───────────────────────────────────────────── */
 /* TYPES */
@@ -53,6 +54,11 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use((config) => {
   const token = getAccessToken();
+
+  config.params = {
+    ...config.params,
+    tz: getUserTimezone(), // ✅ single source of truth
+  };
 
   if (token) {
     config.headers = config.headers || {};
