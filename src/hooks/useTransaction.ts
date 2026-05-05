@@ -12,6 +12,7 @@ import {
   transactionService,
   UpdateTransactionBody,
 } from "../api/transactionService";
+import { getUserTimezone } from "../utils/timezone";
 
 // ── Query keys ─────────────────────────────────────────────────────
 
@@ -24,8 +25,12 @@ export const transactionKeys = {
 // ── GET /transactions ──────────────────────────────────────────────
 
 export const useTransactions = (filters?: TransactionQuery) => {
+  const tz = getUserTimezone();
   return useQuery({
-    queryKey: transactionKeys.list(filters),
+    queryKey: transactionKeys.list({
+      ...filters,
+      tz,
+    }),
     queryFn: () => transactionService.getAll(filters),
     placeholderData: keepPreviousData, // keeps old data visible while new page loads
   });
@@ -34,8 +39,12 @@ export const useTransactions = (filters?: TransactionQuery) => {
 // ── GET /transactions──────────────────────────────────────────────
 
 export const useInfiniteTransactions = (filters?: TransactionQuery) => {
+  const tz = getUserTimezone();
   return useInfiniteQuery({
-    queryKey: transactionKeys.list(filters),
+    queryKey: transactionKeys.list({
+      ...filters,
+      tz,
+    }),
 
     queryFn: ({ pageParam = 1 }) =>
       transactionService.getAll({
