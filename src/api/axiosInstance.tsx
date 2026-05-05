@@ -1,45 +1,6 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+
 import { getUserTimezone } from "../utils/timezone";
-
-/* ───────────────────────────────────────────── */
-/* TYPES */
-/* ───────────────────────────────────────────── */
-
-declare module "axios" {
-  export interface AxiosRequestConfig {
-    _retry?: boolean;
-  }
-}
-
-type QueueItem = {
-  resolve: (token: string) => void;
-  reject: (err: unknown) => void;
-};
-
-/* ───────────────────────────────────────────── */
-/* STATE */
-/* ───────────────────────────────────────────── */
-
-let isRefreshing = false;
-let failedQueue: QueueItem[] = [];
-
-/* ───────────────────────────────────────────── */
-/* HELPERS */
-/* ───────────────────────────────────────────── */
-
-const processQueue = (error: unknown, token: string | null) => {
-  failedQueue.forEach((p) => {
-    if (error) p.reject(error);
-    else if (token) p.resolve(token);
-  });
-  failedQueue = [];
-};
-
-const getAccessToken = () => localStorage.getItem("accessToken");
-
-/* ───────────────────────────────────────────── */
-/* AXIOS INSTANCE */
-/* ───────────────────────────────────────────── */
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3001/api/v1",
@@ -48,108 +9,94 @@ const axiosInstance = axios.create({
   withCredentials: true, // required for refresh cookie
 });
 
-/* ───────────────────────────────────────────── */
-/* REQUEST INTERCEPTOR */
-/* ───────────────────────────────────────────── */
+// ---- STATE ----
+let isRefreshing = false;
+let failedQueue: {
+  resolve: (token: string) => void;
+  reject: (err: unknown) => void;
+}[] = [];
 
-axiosInstance.interceptors.request.use((config) => {
-  const token = getAccessToken();
+// ---- HELPERS ----
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token!);
+    }
+  });
+  failedQueue = [];
+};
 
+// ---- REQUEST INTERCEPTOR ----
+axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  const accessToken = localStorage.getItem("accessToken");
   config.params = {
     ...config.params,
     tz: getUserTimezone(), // ✅ single source of truth
   };
-
-  if (token) {
-    config.headers = config.headers || {};
-    config.headers.Authorization = `Bearer ${token}`;
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
 
   return config;
 });
 
-/* ───────────────────────────────────────────── */
-/* RESPONSE INTERCEPTOR */
-/* ───────────────────────────────────────────── */
-
+// ---- RESPONSE INTERCEPTOR ----
 axiosInstance.interceptors.response.use(
-  (res: AxiosResponse) => res,
-
+  (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosRequestConfig;
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
 
-    if (!originalRequest) {
+    if (!error.response) {
       return Promise.reject(error);
     }
 
-    const status = error.response?.status;
-    const url = originalRequest.url || "";
-
-    const isAuthRoute =
-      url.includes("/auth/login") ||
-      url.includes("/auth/me") ||
-      url.includes("/auth/refresh");
-
-    const hasToken = !!getAccessToken();
-
-    /* 🚫 DO NOT refresh for auth routes or no token */
-    if (status !== 401 || originalRequest._retry || isAuthRoute || !hasToken) {
+    // Only handle 401
+    if (error.response.status !== 401 || originalRequest._retry) {
       return Promise.reject(error);
     }
 
     originalRequest._retry = true;
-    originalRequest.headers = originalRequest.headers || {};
 
-    /* ───────── QUEUE HANDLING ───────── */
-
+    // ---- IF REFRESH ALREADY RUNNING → QUEUE ----
     if (isRefreshing) {
-      return new Promise<string>((resolve, reject) => {
-        failedQueue.push({ resolve, reject });
-      })
-        .then((token) => {
-          originalRequest.headers!.Authorization = `Bearer ${token}`;
-          return axiosInstance(originalRequest);
-        })
-        .catch((err) => Promise.reject(err));
+      return new Promise((resolve, reject) => {
+        failedQueue.push({
+          resolve: (token: string) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            resolve(axiosInstance(originalRequest));
+          },
+          reject,
+        });
+      });
     }
 
+    // ---- START REFRESH ----
     isRefreshing = true;
 
     try {
-      /* ───────── REFRESH TOKEN ───────── */
+      const res = await axiosInstance.post("/auth/refresh"); // cookie sent automatically
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const newAccessToken = (res.data as any).accessToken;
 
-      const { data } = await axiosInstance.post<{
-        accessToken: string;
-      }>("/auth/refresh");
+      // Save new token
+      localStorage.setItem("accessToken", newAccessToken);
 
-      const newToken = data.accessToken;
+      // Retry all queued requests
+      processQueue(null, newAccessToken);
 
-      /* ───────── SAVE TOKEN ───────── */
-
-      localStorage.setItem("accessToken", newToken);
-
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
-
-      /* ───────── RESOLVE QUEUE ───────── */
-
-      processQueue(null, newToken);
-
-      /* ───────── RETRY ORIGINAL ───────── */
-
-      originalRequest.headers.Authorization = `Bearer ${newToken}`;
+      // Retry original request
+      originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
       return axiosInstance(originalRequest);
     } catch (refreshError) {
-      /* ───────── HANDLE FAILURE ───────── */
-
       processQueue(refreshError, null);
 
+      // Optional: logout user
       localStorage.removeItem("accessToken");
-
-      // 🔥 Prevent further loops
-      originalRequest._retry = true;
-
-      // 👉 Better than hard reload (optional)
-      window.dispatchEvent(new Event("auth:logout"));
+      window.location.href = "/login";
 
       return Promise.reject(refreshError);
     } finally {
