@@ -54,6 +54,25 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // ✅ Expanded guard: skip retry logic for ANY auth-related endpoint
+    const isAuthRoute = ["/auth/refresh", "/auth/logout", "/auth/login"].some((path) =>
+      originalRequest.url?.includes(path),
+    );
+
+    if (isAuthRoute) {
+      // ✅ If refresh specifically failed, clean up and redirect
+      if (originalRequest.url?.includes("/auth/refresh")) {
+        processQueue(error, null);
+        isRefreshing = false; // ✅ guard against state being stuck
+        localStorage.removeItem("accessToken");
+
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
+      }
+      return Promise.reject(error);
+    }
+
     // Only handle 401
     if (error.response.status !== 401 || originalRequest._retry) {
       return Promise.reject(error);
@@ -61,7 +80,6 @@ axiosInstance.interceptors.response.use(
 
     originalRequest._retry = true;
 
-    // ---- IF REFRESH ALREADY RUNNING → QUEUE ----
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({
@@ -93,10 +111,17 @@ axiosInstance.interceptors.response.use(
       return axiosInstance(originalRequest);
     } catch (refreshError) {
       processQueue(refreshError, null);
-
-      // Optional: logout user
       localStorage.removeItem("accessToken");
-      window.location.href = "/login";
+
+      // ✅ Use plain fetch to avoid interceptor cycle — fire and forget
+      fetch(
+        `${import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3001/api/v1"}/auth/logout`,
+        { method: "POST", credentials: "include" },
+      ).catch(() => {});
+
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
 
       return Promise.reject(refreshError);
     } finally {

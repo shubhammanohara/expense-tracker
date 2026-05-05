@@ -10,14 +10,12 @@ export const authKeys = {
 
 // ── Helpers ────────────────────────────────────────────────────────
 
-const persistTokens = (accessToken: string, refreshToken: string) => {
+const persistTokens = (accessToken: string) => {
   localStorage.setItem("accessToken", accessToken);
-  localStorage.setItem("refreshToken", refreshToken);
 };
 
 const clearTokens = () => {
   localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
 };
 
 // ── GET /auth/me ───────────────────────────────────────────────────
@@ -31,15 +29,14 @@ export const useAuthMe = () => {
       } catch (error) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const err = error as any;
-
-        if (err?.status === 401 || err?.response?.status === 401) {
-          return null; // ✅ return null instead of throwing — stops retries
+        if (err?.response?.status === 401) {
+          return null;
         }
         throw error;
       }
     },
-    staleTime: 1000 * 60 * 5, // 5 min — identity rarely changes mid-session
-    retry: false, // don't retry on 401 — user is simply not authed
+    staleTime: 1000 * 60 * 5,
+    retry: false,
   });
 };
 
@@ -50,9 +47,8 @@ export const useRegister = () => {
 
   return useMutation({
     mutationFn: (body: RegisterBody) => authService.register(body),
-    onSuccess: ({ accessToken, refreshToken, data }) => {
-      persistTokens(accessToken, refreshToken);
-      // Seed the "me" cache immediately — avoids an extra round-trip
+    onSuccess: ({ accessToken, data }) => {
+      persistTokens(accessToken);
       queryClient.setQueryData(authKeys.me, data);
     },
   });
@@ -65,8 +61,8 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: (body: LoginBody) => authService.login(body),
-    onSuccess: ({ accessToken, refreshToken, data }) => {
-      persistTokens(accessToken, refreshToken);
+    onSuccess: ({ accessToken, data }) => {
+      persistTokens(accessToken);
       queryClient.setQueryData(authKeys.me, data);
     },
   });
@@ -77,38 +73,21 @@ export const useLogin = () => {
 export const useLogout = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: authService.logout,
-    onSuccess: () => {
-      clearTokens();
-      queryClient.clear(); // wipe all cached data
-      window.location.href = "/login";
-    },
-    onError: () => {
-      // Even if the server call fails, clear local state
-      clearTokens();
-      queryClient.clear();
-      window.location.href = "/login";
-    },
-  });
-};
+  const cleanup = () => {
+    clearTokens();
+    queryClient.clear();
+    window.location.href = "/login";
+  };
 
-// ── POST /auth/refresh ─────────────────────────────────────────────
-
-export const useRefreshTokens = () => {
   return useMutation({
-    mutationFn: () => {
-      const refreshToken = localStorage.getItem("refreshToken") ?? "";
-      return authService.refresh({ refreshToken });
-    },
-    onSuccess: ({ accessToken, refreshToken }) => {
-      persistTokens(accessToken, refreshToken);
-    },
-    onError: () => {
-      // Refresh failed — token is expired/revoked, force re-login
-      clearTokens();
-      window.location.href = "/login";
-    },
+    mutationFn: () =>
+      // Raw fetch to bypass axios interceptor — avoids re-triggering 401 refresh cycle
+      fetch(
+        `${import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3001/api/v1"}/auth/logout`,
+        { method: "POST", credentials: "include" },
+      ).catch(() => {}), // fire-and-forget — never throw
+    onSuccess: cleanup,
+    onError: cleanup,
   });
 };
 
@@ -117,7 +96,6 @@ export const useRefreshTokens = () => {
 export const useGenerateApiKey = () => {
   return useMutation({
     mutationFn: authService.generateApiKey,
-    // Raw key is returned once — caller is responsible for showing it to the user
   });
 };
 

@@ -10,7 +10,6 @@ export interface AuthUser {
 
 export interface AuthTokens {
   accessToken: string;
-  refreshToken: string;
 }
 
 export interface AuthResponse extends AuthTokens {
@@ -28,10 +27,6 @@ export interface LoginBody {
   password: string;
 }
 
-export interface RefreshBody {
-  refreshToken: string;
-}
-
 export interface GenerateApiKeyResponse {
   apiKey: string;
   message: string;
@@ -45,12 +40,6 @@ export const authService = {
 
   login: (body: LoginBody) =>
     axiosInstance.post<AuthResponse>("/auth/login", body).then((r) => r.data),
-
-  refresh: (body: RefreshBody) =>
-    axiosInstance.post<AuthTokens>("/auth/refresh", body).then((r) => r.data),
-
-  logout: () =>
-    axiosInstance.post<{ message: string }>("/auth/logout").then((r) => r.data),
 
   me: () => axiosInstance.get<{ data: AuthUser }>("/auth/me").then((r) => r.data.data),
 
