@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useLogin, useRegister } from "@/src/hooks/useAuth";
+import { useAuthStore } from "@/src/hooks/useAuthStore";
 
 import Button from "../Button";
 import { Input } from "../Input";
@@ -13,6 +14,8 @@ const Login = () => {
   const [name, setName] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
+
+  const { setUser, setToken } = useAuthStore.getState();
 
   const navigate = useNavigate();
 
@@ -29,7 +32,11 @@ const Login = () => {
         register(
           { name, email, password },
           {
-            onSuccess: () => navigate("/dashboard"),
+            onSuccess: (data) => {
+              setUser(data.data);
+              setToken(data.accessToken);
+              navigate("/dashboard");
+            },
           },
         );
       }
@@ -38,7 +45,11 @@ const Login = () => {
         login(
           { email, password },
           {
-            onSuccess: () => navigate("/dashboard"),
+            onSuccess: (data) => {
+              setUser(data.data);
+              setToken(data.accessToken);
+              navigate("/dashboard");
+            },
           },
         );
       }

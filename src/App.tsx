@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Loader2, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import Header from "./components/Header";
 import Login from "./components/Login";
 import Navigation from "./components/Navigation";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { useAuthMe } from "./hooks/useAuth";
+import { useAuthStore } from "./hooks/useAuthStore";
 import AddExpense from "./screens/AddExpense";
 import Dashboard from "./screens/Dashboard";
 import History from "./screens/History";
@@ -24,7 +24,7 @@ const App = () => {
     const saved = localStorage.getItem("theme");
     return (saved as "dark" | "light") || "dark";
   });
-  const { data: user, isLoading } = useAuthMe();
+  const { isAuthenticated } = useAuthStore.getState();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -38,16 +38,9 @@ const App = () => {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  if (isLoading)
-    return (
-      <div className="flex h-screen items-center justify-center py-12">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
-      </div>
-    );
-
   return (
     <div className="min-h-screen bg-surface selection:bg-primary/30 pb-32">
-      {user && <Header />}
+      {isAuthenticated && <Header />}
 
       <main className="pt-4 px-6 max-w-5xl mx-auto">
         <AnimatePresence mode="wait">
@@ -93,7 +86,7 @@ const App = () => {
         </AnimatePresence>
       </main>
 
-      {user && <Navigation />}
+      {isAuthenticated && <Navigation />}
 
       {/* Floating Button */}
       {activeTab === "/" && (

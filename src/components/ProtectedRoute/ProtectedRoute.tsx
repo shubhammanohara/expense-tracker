@@ -1,20 +1,11 @@
-import { Loader2 } from "lucide-react";
 import { Navigate, Outlet } from "react-router-dom";
 
-import { useAuthMe } from "@/src/hooks/useAuth";
+import { useAuthStore } from "@/src/hooks/useAuthStore";
 
 const ProtectedRoute = () => {
-  const { data: user, isPending, isError } = useAuthMe();
+  const { isAuthenticated } = useAuthStore.getState();
 
-  if (isPending)
-    return (
-      <div className="flex h-screen items-center justify-center py-12">
-        <Loader2 className="w-6 h-6 animate-spin text-primary" />
-      </div>
-    );
-
-  // ✅ on error (401), redirect to login instead of looping
-  if (isError || !user) return <Navigate to="/login" replace />;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return <Outlet />;
 };
