@@ -49,7 +49,7 @@ const App = () => {
     <div className="min-h-screen bg-surface selection:bg-primary/30 pb-32">
       {user && <Header />}
 
-      <main className="pt-24 px-6 max-w-5xl mx-auto">
+      <main className="pt-4 px-6 max-w-5xl mx-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
