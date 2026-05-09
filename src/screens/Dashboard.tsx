@@ -9,7 +9,7 @@ const getGreetingMessage = (name?: string) => {
   if (hour < 12) return `Good morning, ${userName}`;
   if (hour < 17) return `Good afternoon, ${userName}`;
   if (hour < 21) return `Good evening, ${userName}`;
-  if (hour < 24) return `Hello, ${userName}`;
+  if (hour < 23) return `Hello, ${userName}`;
   return `Night owl, ${userName} 🌙`;
 };
 

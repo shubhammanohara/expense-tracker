@@ -180,7 +180,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           <textarea
             ref={ref}
             rows={rows}
-            className={cn(baseInputClass, "min-h-32 py-4 resize-none")}
+            className={cn(baseInputClass, "min-h-32 py-4 resize-none", className)}
             {...props}
           />
         </div>

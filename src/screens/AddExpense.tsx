@@ -7,6 +7,7 @@ import AmountInput from "../components/AmountInput";
 import Button from "../components/Button";
 import CategoryPicker from "../components/CategoryPicker";
 import { Input, Select, TextArea } from "../components/Input";
+import RawMessageViewer from "../components/RawMessageViewer/RawMessageViewer";
 import {
   useCreateTransaction,
   useDeleteTransaction,
@@ -131,6 +132,8 @@ export const AddExpense = ({ onCancel, onSuccess, transaction }: AddExpenseProps
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+
+        <RawMessageViewer message={transaction?.rawMessage || ""} />
 
         <Button
           size="lg"

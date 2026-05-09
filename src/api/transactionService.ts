@@ -11,9 +11,12 @@ export interface Transaction {
   date: string;
   merchant: string;
   paymentMethod: PaymentMethod;
+  confidence?: number;
   tags?: string[];
   isRecurring?: boolean;
   recurringFrequency?: Period;
+  bank?: string;
+  rawMessage?: string;
 }
 
 export interface TransactionQuery {
