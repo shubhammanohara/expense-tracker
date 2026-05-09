@@ -12,13 +12,15 @@ import {
   transactionService,
   UpdateTransactionBody,
 } from "../api/transactionService";
+import { TransactionFilters } from "../types/filters";
+import { filtersToQuery } from "../utils/filtersToQuery";
 import { getUserTimezone } from "../utils/timezone";
 
 // ── Query keys ─────────────────────────────────────────────────────
 
 export const transactionKeys = {
   all: ["transactions"] as const,
-  list: (filters?: TransactionQuery) => ["transactions", "list", filters] as const,
+  list: (filters?: TransactionFilters) => ["transactions", "list", filters] as const,
   summary: () => ["transactions", "summary"] as const,
 };
 
@@ -27,10 +29,7 @@ export const transactionKeys = {
 export const useTransactions = (filters?: TransactionQuery) => {
   const tz = getUserTimezone();
   return useQuery({
-    queryKey: transactionKeys.list({
-      ...filters,
-      tz,
-    }),
+    queryKey: ["transactions", "list", { ...filters, tz }],
     queryFn: () => transactionService.getAll(filters),
     placeholderData: keepPreviousData, // keeps old data visible while new page loads
   });
@@ -38,26 +37,14 @@ export const useTransactions = (filters?: TransactionQuery) => {
 
 // ── GET /transactions──────────────────────────────────────────────
 
-export const useInfiniteTransactions = (filters?: TransactionQuery) => {
-  const tz = getUserTimezone();
+export const useInfiniteTransactions = (filters: TransactionFilters = {}) => {
   return useInfiniteQuery({
-    queryKey: transactionKeys.list({
-      ...filters,
-      tz,
-    }),
-
+    queryKey: transactionKeys.list(filters),
     queryFn: ({ pageParam = 1 }) =>
-      transactionService.getAll({
-        ...filters,
-        page: pageParam,
-        limit: 10,
-      }),
-
+      transactionService.getAll(filtersToQuery(filters, pageParam, 10)),
     initialPageParam: 1,
-
     getNextPageParam: (lastPage) => {
       const { page, pages } = lastPage.pagination;
-
       return page < pages ? page + 1 : undefined;
     },
   });

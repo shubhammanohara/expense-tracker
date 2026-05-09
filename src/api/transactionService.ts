@@ -28,6 +28,11 @@ export interface TransactionQuery {
   endDate?: string;
   tags?: string; // comma-separated
   tz?: string; // timezone, e.g. "America/New_York"
+  paymentMethod?: PaymentMethod;
+  minAmount?: number;
+  maxAmount?: number;
+  isRecurring?: boolean;
+  search?: string;
 }
 
 export interface PaginatedTransactions {

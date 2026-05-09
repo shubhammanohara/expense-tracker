@@ -23,7 +23,6 @@ import {
   Pizza,
   Plane,
   Receipt,
-  Search,
   ShoppingBag,
   Smartphone,
   Sparkles,

@@ -5,43 +5,45 @@
 
 import { format, parseISO } from "date-fns";
 import {
-  Bolt,
+  Banknote,
   BookOpen,
+  Bolt,
+  Briefcase,
   Car,
   ChevronRight,
   CircleHelp,
-  Clipboard,
-  Hamburger,
-  Heart,
+  Clapperboard,
+  CreditCard,
+  Dumbbell,
+  GraduationCap,
+  HeartPulse,
   Home,
   IndianRupee,
-  PiggyBank,
+  Landmark,
+  Laptop,
+  Pizza,
   Plane,
+  Receipt,
   ShoppingBag,
+  Smartphone,
+  Tv,
+  UtensilsCrossed,
+  Wallet,
+  Wifi,
+  Coffee,
+  Wine,
+  Fuel,
+  Shirt,
+  Droplets,
+  Flame,
+  Shield,
+  Sparkles,
+  HeartHandshake,
 } from "lucide-react";
 import { FC } from "react";
 
 import { Transaction } from "../api/transactionService";
-import { PaymentMethod } from "../types";
-import {
-  CATEGORY_EDUCATION,
-  CATEGORY_ENTERTAINMENT,
-  CATEGORY_FOOD,
-  CATEGORY_HEALTHCARE,
-  CATEGORY_INVESTMENT,
-  CATEGORY_OTHER,
-  CATEGORY_RENT,
-  CATEGORY_SALARY,
-  CATEGORY_SHOPPING,
-  CATEGORY_TRANSPORT,
-  CATEGORY_TRAVEL,
-  CATEGORY_UTILITIES,
-  PAYMENT_METHOD_BANK_TRANSFER,
-  PAYMENT_METHOD_CARD,
-  PAYMENT_METHOD_CASH,
-  PAYMENT_METHOD_UPI,
-} from "../utils/constants";
-import Button from "./Button";
+import { Category, PaymentMethod } from "../types";
 
 interface TransactionCardProps {
   transaction: Transaction;
@@ -50,31 +52,80 @@ interface TransactionCardProps {
   onEdit?: (transaction: Transaction) => void;
 }
 
-const iconMap = {
-  [CATEGORY_FOOD]: <Hamburger />,
-  [CATEGORY_TRANSPORT]: <Car />,
-  [CATEGORY_RENT]: <Home />,
-  [CATEGORY_UTILITIES]: <Bolt />,
-  [CATEGORY_HEALTHCARE]: <Heart />,
-  [CATEGORY_ENTERTAINMENT]: <Clipboard />,
-  [CATEGORY_EDUCATION]: <BookOpen />,
-  [CATEGORY_SHOPPING]: <ShoppingBag />,
-  [CATEGORY_TRAVEL]: <Plane />,
-  [CATEGORY_SALARY]: <IndianRupee />,
-  [CATEGORY_INVESTMENT]: <PiggyBank />,
-  [CATEGORY_OTHER]: <CircleHelp />,
+const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  cash: "Cash",
+  card: "Card",
+  upi: "UPI",
+  bank_transfer: "Bank Transfer",
 };
 
-const PAYMENT_METHODS: { value: PaymentMethod; label: string }[] = [
-  { value: PAYMENT_METHOD_CASH, label: "Cash" },
-  { value: PAYMENT_METHOD_CARD, label: "Card" },
-  { value: PAYMENT_METHOD_UPI, label: "UPI" },
-  { value: PAYMENT_METHOD_BANK_TRANSFER, label: "Bank Transfer" },
-];
+const iconMap: Partial<Record<Category, JSX.Element>> = {
+  // Food & Drink
+  [Category.FOOD_DELIVERY]: <Pizza />,
+  [Category.DINING_OUT]: <UtensilsCrossed />,
+  [Category.GROCERIES]: <ShoppingBag />,
+  [Category.CAFE]: <Coffee />,
+  [Category.DRINKS]: <Wine />,
 
-const Icon = ({ transaction }: { transaction: Transaction }) => {
-  return iconMap[transaction.category] || <CircleHelp />;
+  // Transport & Travel
+  [Category.TRANSPORT]: <Car />,
+  [Category.FUEL]: <Fuel />,
+  [Category.TRAVEL]: <Plane />,
+
+  // Shopping
+  [Category.SHOPPING]: <ShoppingBag />,
+  [Category.CLOTHING]: <Shirt />,
+  [Category.ELECTRONICS]: <Laptop />,
+
+  // Utilities
+  [Category.UTILITIES]: <Bolt />,
+  [Category.ELECTRICITY]: <Bolt />,
+  [Category.WATER]: <Droplets />,
+  [Category.GAS]: <Flame />,
+  [Category.INTERNET]: <Wifi />,
+  [Category.MOBILE_RECHARGE]: <Smartphone />,
+  [Category.DTH]: <Tv />,
+  [Category.RENT]: <Home />,
+
+  // Health
+  [Category.HEALTHCARE]: <HeartPulse />,
+  [Category.PHARMACY]: <HeartPulse />,
+  [Category.FITNESS]: <Dumbbell />,
+
+  // Entertainment
+  [Category.ENTERTAINMENT]: <Clapperboard />,
+  [Category.SUBSCRIPTIONS]: <CreditCard />,
+
+  // Finance
+  [Category.TRANSFER]: <Wallet />,
+  [Category.CASH]: <Banknote />,
+  [Category.EMI]: <Receipt />,
+  [Category.INSURANCE]: <Shield />,
+  [Category.INVESTMENT]: <Landmark />,
+  [Category.CREDIT_CARD_BILL]: <CreditCard />,
+  [Category.SALARY]: <IndianRupee />,
+
+  // Personal
+  [Category.EDUCATION]: <GraduationCap />,
+  [Category.PERSONAL_CARE]: <Sparkles />,
+  [Category.HOME]: <Home />,
+
+  // Other
+  [Category.BUSINESS]: <Briefcase />,
+  [Category.TAXES]: <Receipt />,
+  [Category.CHARITY]: <HeartHandshake />,
+  [Category.UNCATEGORIZED]: <CircleHelp />,
 };
+
+const Icon = ({ category }: { category: Category }) => {
+  return iconMap[category] || <CircleHelp />;
+};
+
+const formatCategory = (category: string) =>
+  category
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 
 export const TransactionCard: FC<TransactionCardProps> = ({
   transaction,
@@ -83,8 +134,8 @@ export const TransactionCard: FC<TransactionCardProps> = ({
   onEdit,
 }) => {
   const date = parseISO(transaction.date);
-  const formattedDate = format(date, "dd MMM yyyy, hh:mm a");
 
+  const formattedDate = format(date, "dd MMM yyyy, hh:mm a");
   const timeOnly = format(date, "hh:mm a");
 
   return (
@@ -94,31 +145,38 @@ export const TransactionCard: FC<TransactionCardProps> = ({
     >
       <div className="flex items-center gap-4 flex-1 min-w-0">
         <div className="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center text-primary transition-transform group-hover:scale-110 shrink-0">
-          <Icon transaction={transaction} />
+          <Icon category={transaction.category as Category} />
         </div>
+
         <div className="min-w-0">
           <p className="font-bold text-on-surface truncate">{transaction.merchant}</p>
+
           <p className="text-xs text-on-surface-variant font-medium">
-            {transaction.category}
+            {formatCategory(transaction.category)}
           </p>
+
           <p className="text-xs text-on-surface-variant font-medium">
             {showOnlyTime ? timeOnly : formattedDate}
           </p>
         </div>
       </div>
+
       <div className="flex items-center gap-4 ml-4 shrink-0">
         <div className="text-right">
           <p
-            className={`font-bold ${isIncome ? "text-primary" : "text-on-surface"} text-ellipsis overflow-hidden whitespace-nowrap`}
+            className={`font-bold ${
+              isIncome ? "text-primary" : "text-on-surface"
+            } text-ellipsis overflow-hidden whitespace-nowrap`}
           >
             {isIncome ? "+" : "-"}₹{Math.abs(transaction.amount).toFixed(2)}
           </p>
-          <p
-            className={`text-xs text-on-surface-variant text-ellipsis overflow-hidden whitespace-nowrap`}
-          >
-            {PAYMENT_METHODS.find((pm) => pm.value === transaction.paymentMethod)?.label}
+
+          <p className="text-xs text-on-surface-variant text-ellipsis overflow-hidden whitespace-nowrap">
+            {PAYMENT_METHOD_LABELS[transaction.paymentMethod as PaymentMethod] ||
+              "Unknown"}
           </p>
         </div>
+
         <ChevronRight
           size={18}
           strokeWidth={2.5}
