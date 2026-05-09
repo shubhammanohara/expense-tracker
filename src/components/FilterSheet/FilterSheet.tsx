@@ -1,9 +1,10 @@
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { Category } from "@/src/types";
+
 import { PaymentMode, TransactionFilters } from "../../types/filters";
 import { getDatePreset } from "../../utils/datePresets";
-import { Category } from "@/src/types";
 
 const PAYMENT_MODES: { label: string; value: PaymentMode }[] = [
   { label: "UPI", value: "upi" },
@@ -76,14 +77,14 @@ const FilterSheet = ({ open, filters, onApply, onClose }: Props) => {
       {open && <div className="fixed inset-0 bg-black/40 z-40" onClick={onClose} />}
 
       <div
-        className={`fixed bottom-0 left-0 right-0 z-50 bg-surface rounded-t-2xl
+        className={`fixed bottom-0 left-0 right-0 z-50 bg-surface rounded-t-2xl pb-16
                     border-t border-outline-variant/20 max-h-[88dvh] flex flex-col
                     transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
                     ${open ? "translate-y-0" : "translate-y-full"}`}
       >
-        <div className="w-10 h-1 bg-outline-variant/40 rounded-full mx-auto mt-3 flex-shrink-0" />
+        <div className="w-10 h-1 bg-outline-variant/40 rounded-full mx-auto mt-3 shrink-0" />
 
-        <div className="flex items-center justify-between px-5 py-4 flex-shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 shrink-0">
           <h2 className="font-bold text-base">Filters</h2>
           <div className="flex items-center gap-4">
             <button
