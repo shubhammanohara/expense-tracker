@@ -11,7 +11,6 @@ const api = axios.create({
 });
 
 // ---- STATE ----
-let accessToken: string | null = null;
 let isRefreshing = false;
 let failedQueue: {
   resolve: (token: string) => void;
@@ -36,7 +35,7 @@ api.interceptors.request.use(
     const { accessToken } = useAuthStore.getState();
     config.params = {
       ...config.params,
-      tz: getUserTimezone(), // ✅ single source of truth
+      tz: getUserTimezone(),
     };
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -194,10 +193,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-
-// Helper to update the singleton's token
-export const setAccessToken = (token: string | null) => {
-  accessToken = token;
-};
 
 export default api;

@@ -1,6 +1,9 @@
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { Category } from "@/src/types";
+import { CATEGORY_MAP } from "@/src/utils/categories";
+
 import { ActiveFilter, TransactionFilters } from "../../types/filters";
 import { getDatePreset } from "../../utils/datePresets";
 
@@ -151,7 +154,7 @@ const FilterBar = ({
               className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold
                          bg-primary/10 text-primary border border-primary/20"
             >
-              {f.label}
+              {f.key === "categories" ? CATEGORY_MAP[f.label as Category].label : f.label}
               <button onClick={() => onRemoveFilter(f.key)} className="hover:opacity-70">
                 <X className="w-3 h-3" />
               </button>

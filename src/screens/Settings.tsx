@@ -1,8 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import {
   Bell,
   ChevronRight,
@@ -15,6 +10,11 @@ import {
   ShieldCheck,
   Wallet,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+import Button from "../components/Button";
+import Toggle from "../components/Toggle";
+import { useAuthStore } from "../hooks/useAuthStore";
 
 export default function ProfileSettings({
   theme,
@@ -23,25 +23,38 @@ export default function ProfileSettings({
   theme: "dark" | "light";
   onThemeToggle: () => void;
 }) {
+  const { user, logout } = useAuthStore.getState();
+  const navigate = useNavigate();
+  const initials = user?.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
   return (
     <div className="space-y-8 pb-10">
       <section className="flex flex-col items-center text-center space-y-4 pt-6">
         <div className="relative">
-          <div className="w-32 h-32 rounded-xl overflow-hidden ring-4 ring-primary-container/20">
-            <img
-              alt="Alex Rivers"
-              className="w-full h-full object-cover"
-              src="https://picsum.photos/seed/user/300/300"
-              referrerPolicy="no-referrer"
-            />
+          {/* Avatar Ring */}
+          <div className="w-32 h-32 rounded-full bg-linear-to-br from-primary via-secondary/80 to-tertiary/80 p-0.75 shadow-[0_0_40px_rgba(78,222,163,0.18)]">
+            {/* Inner Avatar */}
+            <div className="w-full h-full rounded-full bg-surface-container flex items-center justify-center relative overflow-hidden">
+              {/* Soft Glow */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(78,222,163,0.18),transparent_65%)]" />
+
+              {/* Initials */}
+              <span className="relative z-10 text-4xl font-black font-headline tracking-tight text-on-surface">
+                {initials}
+              </span>
+            </div>
           </div>
-          <button className="absolute -bottom-2 -right-2 bg-primary text-surface p-1.5 rounded-lg shadow-lg">
+
+          {/* Edit Button */}
+          <button className="absolute -bottom-1 -right-1 bg-primary text-surface p-2 rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all duration-200">
             <Edit2 className="w-4 h-4 fill-surface" />
           </button>
         </div>
         <div>
           <h2 className="text-2xl font-headline font-bold text-on-surface">
-            Alex Rivers
+            {user?.name}
           </h2>
           <p className="text-on-surface-variant font-medium">Premium Member</p>
         </div>
@@ -111,10 +124,18 @@ export default function ProfileSettings({
       </section>
 
       <section className="pt-4">
-        <button className="w-full bg-surface-container-high text-red-400 hover:bg-red-400/10 border border-red-400/10 transition-all font-bold py-4 rounded-lg flex items-center justify-center gap-2 group active:scale-95 duration-150">
-          <LogOut className="w-5 h-5" />
+        <Button
+          onClick={() => {
+            logout();
+            navigate("/login");
+          }}
+          variant="outline-danger"
+          size="lg"
+          className="w-full"
+        >
+          <LogOut />
           Logout
-        </button>
+        </Button>
         <p className="text-center text-[10px] font-body font-semibold uppercase tracking-widest text-on-surface-variant/40 mt-8">
           Version 2.4.0 (Emerald Reserve)
         </p>
@@ -147,18 +168,5 @@ function SettingsItem({
       </div>
       {trailing}
     </div>
-  );
-}
-
-function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void }) {
-  return (
-    <button
-      onClick={onChange}
-      className={`w-12 h-6 rounded-full relative flex items-center px-1 transition-colors ${checked ? "bg-primary-container" : "bg-surface-container-highest"}`}
-    >
-      <div
-        className={`w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${checked ? "ml-auto" : ""}`}
-      ></div>
-    </button>
   );
 }

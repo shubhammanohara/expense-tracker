@@ -62,19 +62,19 @@ const variants = {
     "bg-transparent text-on-surface hover:bg-surface-container-low active:scale-[0.95]",
 
   danger:
-    "bg-gradient-to-r from-red-600 to-rose-500 text-surface shadow-lg shadow-red-500/20 hover:brightness-105 active:scale-[0.95]",
+    "bg-red-400 text-surface shadow-lg shadow-red-500/20 hover:brightness-105 active:scale-[0.95]",
 
   "outline-primary":
-    "border border-primary/35 text-primary bg-transparent hover:bg-primary-container/10 active:scale-[0.95]",
+    "border-2 border-primary/35 text-primary bg-transparent hover:bg-primary-container/10 active:scale-[0.95]",
 
   "outline-secondary":
-    "border border-on-surface/10 text-on-surface bg-transparent hover:bg-surface-container-low active:scale-[0.95]",
+    "border-2 border-on-surface/10 text-on-surface bg-transparent hover:bg-surface-container-low active:scale-[0.95]",
 
   "outline-tertiary":
-    "border border-transparent text-on-surface-variant bg-transparent hover:bg-surface-container-low active:scale-[0.95]",
+    "border-2 border-transparent text-on-surface-variant bg-transparent hover:bg-surface-container-low active:scale-[0.95]",
 
   "outline-danger":
-    "border border-red-500/35 text-red-500 bg-transparent hover:bg-red-500/10 active:scale-[0.95]",
+    "border-2 border-red-400 text-red-400 bg-transparent hover:bg-red-400/10 active:scale-[0.95]",
 };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(

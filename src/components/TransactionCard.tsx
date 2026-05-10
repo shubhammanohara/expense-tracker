@@ -1,49 +1,10 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { format, parseISO } from "date-fns";
-import {
-  Banknote,
-  BookOpen,
-  Bolt,
-  Briefcase,
-  Car,
-  ChevronRight,
-  CircleHelp,
-  Clapperboard,
-  CreditCard,
-  Dumbbell,
-  GraduationCap,
-  HeartPulse,
-  Home,
-  IndianRupee,
-  Landmark,
-  Laptop,
-  Pizza,
-  Plane,
-  Receipt,
-  ShoppingBag,
-  Smartphone,
-  Tv,
-  UtensilsCrossed,
-  Wallet,
-  Wifi,
-  Coffee,
-  Wine,
-  Fuel,
-  Shirt,
-  Droplets,
-  Flame,
-  Shield,
-  Sparkles,
-  HeartHandshake,
-} from "lucide-react";
+import { ChevronRight, CircleHelp } from "lucide-react";
 import { FC } from "react";
 
 import { Transaction } from "../api/transactionService";
 import { Category, PaymentMethod } from "../types";
+import { CATEGORY_MAP } from "../utils/categories";
 
 interface TransactionCardProps {
   transaction: Transaction;
@@ -59,73 +20,11 @@ const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
   bank_transfer: "Bank Transfer",
 };
 
-const iconMap: Partial<Record<Category, JSX.Element>> = {
-  // Food & Drink
-  [Category.FOOD_DELIVERY]: <Pizza />,
-  [Category.DINING_OUT]: <UtensilsCrossed />,
-  [Category.GROCERIES]: <ShoppingBag />,
-  [Category.CAFE]: <Coffee />,
-  [Category.DRINKS]: <Wine />,
-
-  // Transport & Travel
-  [Category.TRANSPORT]: <Car />,
-  [Category.FUEL]: <Fuel />,
-  [Category.TRAVEL]: <Plane />,
-
-  // Shopping
-  [Category.SHOPPING]: <ShoppingBag />,
-  [Category.CLOTHING]: <Shirt />,
-  [Category.ELECTRONICS]: <Laptop />,
-
-  // Utilities
-  [Category.UTILITIES]: <Bolt />,
-  [Category.ELECTRICITY]: <Bolt />,
-  [Category.WATER]: <Droplets />,
-  [Category.GAS]: <Flame />,
-  [Category.INTERNET]: <Wifi />,
-  [Category.MOBILE_RECHARGE]: <Smartphone />,
-  [Category.DTH]: <Tv />,
-  [Category.RENT]: <Home />,
-
-  // Health
-  [Category.HEALTHCARE]: <HeartPulse />,
-  [Category.PHARMACY]: <HeartPulse />,
-  [Category.FITNESS]: <Dumbbell />,
-
-  // Entertainment
-  [Category.ENTERTAINMENT]: <Clapperboard />,
-  [Category.SUBSCRIPTIONS]: <CreditCard />,
-
-  // Finance
-  [Category.TRANSFER]: <Wallet />,
-  [Category.CASH]: <Banknote />,
-  [Category.EMI]: <Receipt />,
-  [Category.INSURANCE]: <Shield />,
-  [Category.INVESTMENT]: <Landmark />,
-  [Category.CREDIT_CARD_BILL]: <CreditCard />,
-  [Category.SALARY]: <IndianRupee />,
-
-  // Personal
-  [Category.EDUCATION]: <GraduationCap />,
-  [Category.PERSONAL_CARE]: <Sparkles />,
-  [Category.HOME]: <Home />,
-
-  // Other
-  [Category.BUSINESS]: <Briefcase />,
-  [Category.TAXES]: <Receipt />,
-  [Category.CHARITY]: <HeartHandshake />,
-  [Category.UNCATEGORIZED]: <CircleHelp />,
-};
-
-const Icon = ({ category }: { category: Category }) => {
-  return iconMap[category] || <CircleHelp />;
-};
+const Icon = ({ category }: { category: Category }) =>
+  CATEGORY_MAP[category]?.icon ?? <CircleHelp />;
 
 const formatCategory = (category: string) =>
-  category
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+  CATEGORY_MAP[category as Category]?.label ?? category;
 
 export const TransactionCard: FC<TransactionCardProps> = ({
   transaction,

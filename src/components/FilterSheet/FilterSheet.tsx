@@ -1,10 +1,12 @@
 import { X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { Category } from "@/src/types";
+import { CATEGORY_OPTIONS } from "@/src/utils/categories";
 
 import { PaymentMode, TransactionFilters } from "../../types/filters";
 import { getDatePreset } from "../../utils/datePresets";
+import Button from "../Button";
+import Toggle from "../Toggle";
 
 const PAYMENT_MODES: { label: string; value: PaymentMode }[] = [
   { label: "UPI", value: "upi" },
@@ -31,11 +33,10 @@ interface Props {
 
 const FilterSheet = ({ open, filters, onApply, onClose }: Props) => {
   const [draft, setDraft] = useState<Partial<TransactionFilters>>({});
-
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (open) setDraft(filters);
-  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [filters, open, setDraft]);
 
   function toggleCategory(cat: string) {
     const lower = cat.toLowerCase();
@@ -68,9 +69,28 @@ const FilterSheet = ({ open, filters, onApply, onClose }: Props) => {
     return draft.dateFrom === from && draft.dateTo === to;
   }
 
-  const draftCount = Object.entries(draft).filter(
-    ([, v]) => v !== undefined && v !== "" && !(Array.isArray(v) && v.length === 0),
-  ).length;
+  const draftCount = useMemo(
+    () =>
+      Object.entries(draft).filter(
+        ([, v]) =>
+          v !== undefined &&
+          v !== "" &&
+          !(Array.isArray(v) && v.length === 0) &&
+          v !== false,
+      ).length,
+    [draft],
+  );
+
+  const footerLabel = useMemo(
+    () =>
+      draftCount > 0 ? `Apply ${draftCount} filter${draftCount > 1 ? "s" : ""}` : "Apply",
+    [draftCount],
+  );
+
+  const onToggleChange = useCallback(
+    (key: "isRecurring" | "hasNotes") => setDraft({ ...draft, [key]: !draft[key] }),
+    [draft],
+  );
 
   return (
     <>
@@ -78,7 +98,7 @@ const FilterSheet = ({ open, filters, onApply, onClose }: Props) => {
 
       <div
         className={`fixed bottom-0 left-0 right-0 z-50 bg-surface rounded-t-2xl pb-16
-                    border-t border-outline-variant/20 max-h-[88dvh] flex flex-col
+                    border-t border-primary max-h-[88dvh] flex flex-col
                     transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]
                     ${open ? "translate-y-0" : "translate-y-full"}`}
       >
@@ -154,12 +174,14 @@ const FilterSheet = ({ open, filters, onApply, onClose }: Props) => {
               Category
             </p>
             <div className="flex flex-wrap gap-2">
-              {Object.values(Category).map((cat) => {
-                const active = draft.categories?.includes(cat.toLowerCase() as never);
+              {CATEGORY_OPTIONS.map((cat) => {
+                const active = draft.categories?.includes(
+                  cat.value.toLowerCase() as never,
+                );
                 return (
                   <button
-                    key={cat}
-                    onClick={() => toggleCategory(cat)}
+                    key={cat.value}
+                    onClick={() => toggleCategory(cat.value)}
                     className={`px-4 py-2 rounded-full text-sm font-semibold transition-all active:scale-95
                                 ${
                                   active
@@ -167,7 +189,7 @@ const FilterSheet = ({ open, filters, onApply, onClose }: Props) => {
                                     : "bg-surface-container-high text-on-surface-variant border border-outline-variant/10"
                                 }`}
                   >
-                    {cat}
+                    {cat.label}
                   </button>
                 );
               })}
@@ -254,33 +276,21 @@ const FilterSheet = ({ open, filters, onApply, onClose }: Props) => {
                 className="flex items-center justify-between cursor-pointer"
               >
                 <span className="text-sm font-semibold text-on-surface">{label}</span>
-                <div
-                  onClick={() => setDraft({ ...draft, [key]: !draft[key] })}
-                  className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer
-                              ${draft[key] ? "bg-primary" : "bg-surface-container-highest"}`}
-                >
-                  <span
-                    className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white
-                                shadow-sm transition-transform
-                                ${draft[key] ? "translate-x-5" : "translate-x-0"}`}
-                  />
-                </div>
+                <Toggle onChange={() => onToggleChange(key)} checked={!!draft[key]} />
               </label>
             ))}
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-5 pb-8 pt-3 border-t border-outline-variant/20 flex-shrink-0">
-          <button
+        <div className="px-5 pb-8 pt-3 border-t border-primary shrink-0">
+          <Button
             onClick={() => onApply(draft)}
-            className="w-full py-3.5 rounded-xl bg-primary text-surface font-bold text-sm
-                       active:scale-[0.98] transition-transform"
+            disabled={draftCount < 1}
+            className="w-full"
           >
-            {draftCount > 0
-              ? `Apply ${draftCount} filter${draftCount > 1 ? "s" : ""}`
-              : "Apply"}
-          </button>
+            {footerLabel}
+          </Button>
         </div>
       </div>
     </>

@@ -116,6 +116,7 @@ export default function History() {
                   key={t._id}
                   transaction={t}
                   showOnlyTime
+                  isIncome={t.type === "income"}
                   onEdit={(t) => {
                     setEditingTransaction(t);
                     setShowForm(true);
