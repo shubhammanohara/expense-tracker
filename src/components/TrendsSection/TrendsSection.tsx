@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 
 import { useTransactions } from "@/src/hooks/useTransaction";
 import { DateRange, Period, TabsData } from "@/src/types";
-// import CategoriesOverview from "../CategoriesOverview";
+import { buildSubFilters, SubFilterOption } from "@/src/utils/buildSubFilters";
 import {
   PERIOD_DAILY,
   PERIOD_MONTHLY,
@@ -12,6 +12,7 @@ import {
 import { getDateFilter } from "@/src/utils/dateFilters";
 import { groupTransactions } from "@/src/utils/groupTransactions";
 
+import SubFilterTabs from "../SubFilterTabs/SubFilterTabs";
 import TimeRangeTabs from "../TimeRangeTabs/TimeRangeTabs ";
 import TrendsChart from "../TrendsChart";
 
@@ -22,26 +23,14 @@ interface TitleData {
   period: string;
 }
 
-const tabs: TabsData[] = [
+const TABS: TabsData[] = [
   { value: PERIOD_DAILY, label: "Daily", isActive: false },
-  {
-    value: PERIOD_WEEKLY,
-    label: "Weekly",
-    isActive: true,
-  },
-  {
-    value: PERIOD_MONTHLY,
-    label: "Monthly",
-    isActive: false,
-  },
-  {
-    value: PERIOD_YEARLY,
-    label: "Yearly",
-    isActive: false,
-  },
+  { value: PERIOD_WEEKLY, label: "Weekly", isActive: true },
+  { value: PERIOD_MONTHLY, label: "Monthly", isActive: false },
+  { value: PERIOD_YEARLY, label: "Yearly", isActive: false },
 ];
 
-const titleData: TitleData[] = [
+const TITLE_DATA: TitleData[] = [
   {
     title: "Daily Spending",
     subtitle: "Your daily spending pattern",
@@ -69,48 +58,43 @@ const titleData: TitleData[] = [
 ];
 
 const TrendsSection = () => {
-  const [tabsData, setTabsData] = useState<TabsData[]>(tabs);
+  const [tabsData, setTabsData] = useState<TabsData[]>(TABS);
   const [period, setPeriod] = useState<Period>(PERIOD_WEEKLY);
-  const [title, setTitle] = useState<TitleData>(titleData[1]);
-  const {
-    data: transactionData,
-    isLoading,
-    error,
-  } = useTransactions({
-    ...getDateFilter(period),
-  });
+  const [title, setTitle] = useState<TitleData>(TITLE_DATA[1]);
 
-  const onTabChange = useCallback((value: Period | DateRange) => {
-    setTabsData((prev) => {
-      return prev.map((data) => {
-        if (data.value === value) {
-          return {
-            ...data,
-            isActive: true,
-          };
-        }
-        return { ...data, isActive: false };
-      });
-    });
-    setTitle(titleData.find((data) => data.value === value) ?? titleData[0]);
-    setPeriod(value as Period);
-  }, []);
+  const subFilters = useMemo(() => buildSubFilters(period), [period]);
+  const [subFilter, setSubFilter] = useState<SubFilterOption>(() => subFilters[0]);
+
+  const dateFilter = useMemo(
+    () =>
+      subFilter
+        ? { startDate: subFilter.dateFrom, endDate: subFilter.dateTo }
+        : getDateFilter(period),
+    [subFilter, period],
+  );
+
+  const { data: transactionData, isLoading, error } = useTransactions(dateFilter);
 
   const chartData = useMemo(
     () => groupTransactions(transactionData?.data ?? [], period),
     [transactionData, period],
   );
 
+  const onTabChange = useCallback((value: Period | DateRange) => {
+    setTabsData((prev) => prev.map((t) => ({ ...t, isActive: t.value === value })));
+    setTitle(TITLE_DATA.find((t) => t.value === value) ?? TITLE_DATA[0]);
+    setPeriod(value as Period);
+    setSubFilter(buildSubFilters(value as Period)[0]); // reset to first on tab change
+  }, []);
+
   return (
     <section className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-        <h2 className="font-headline text-2xl font-bold tracking-tight">
-          Spending trends
-        </h2>
-      </div>
+      <h2 className="font-headline text-2xl font-bold tracking-tight">Spending trends</h2>
+
       <TimeRangeTabs periodsData={tabsData} onChange={onTabChange} />
 
-      {/* Bar Chart Representation */}
+      <SubFilterTabs options={subFilters} active={subFilter} onChange={setSubFilter} />
+
       <div className="glass-card rounded-lg p-6 min-h-70">
         <TrendsChart
           data={chartData}
@@ -118,11 +102,9 @@ const TrendsSection = () => {
           error={error?.message}
           title={title.title}
           subtitle={title.subtitle}
-          period={title.period}
+          period={subFilter?.label ?? title.period}
         />
       </div>
-      {/* Categories Overview */}
-      {/* <CategoriesOverview /> */}
     </section>
   );
 };
