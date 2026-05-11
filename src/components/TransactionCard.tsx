@@ -43,7 +43,7 @@ export const TransactionCard: FC<TransactionCardProps> = ({
       className="glass-card p-4 rounded-lg flex items-center justify-between group transition-all hover:bg-surface-container-high/60 cursor-pointer border border-transparent hover:border-outline-variant/10"
     >
       <div className="flex items-center gap-4 flex-1 min-w-0">
-        <div className="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center text-primary transition-transform group-hover:scale-110 shrink-0">
+        <div className="ransition-transform group-hover:scale-110 shrink-0">
           <Icon category={transaction.category as Category} />
         </div>
 

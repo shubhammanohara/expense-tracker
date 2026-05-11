@@ -79,7 +79,7 @@ export default function CategoryPicker({ value, onChange }: CategoryPickerProps)
                     }`}
                   >
                     <div
-                      className={`w-9 h-9 rounded-full flex items-center justify-center mb-2 ${
+                      className={`rounded-full flex items-center justify-center mb-2 ${
                         active
                           ? "bg-primary/20 text-primary"
                           : "bg-surface-container-highest text-primary"
