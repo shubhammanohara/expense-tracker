@@ -58,7 +58,11 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.FOOD_DELIVERY,
         label: "Food Delivery",
         icon: (
-          <CategoryIcon icon={<Pizza />} color="text-orange-300" bg="bg-orange-500/15" />
+          <CategoryIcon
+            icon={<Pizza />}
+            color="text-orange-600 dark:text-orange-400"
+            bg="bg-orange-500"
+          />
         ),
       },
       {
@@ -67,8 +71,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<UtensilsCrossed />}
-            color="text-amber-300"
-            bg="bg-amber-500/15"
+            color="text-amber-600 dark:text-amber-400"
+            bg="bg-amber-500"
           />
         ),
       },
@@ -78,8 +82,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<ShoppingBasket />}
-            color="text-emerald-300"
-            bg="bg-emerald-500/15"
+            color="text-emerald-600 dark:text-emerald-400"
+            bg="bg-emerald-500"
           />
         ),
       },
@@ -87,14 +91,22 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.DRINKS,
         label: "Drinks",
         icon: (
-          <CategoryIcon icon={<Martini />} color="text-cyan-300" bg="bg-cyan-500/15" />
+          <CategoryIcon
+            icon={<Martini />}
+            color="text-cyan-600 dark:text-cyan-400"
+            bg="bg-cyan-500"
+          />
         ),
       },
       {
         value: Category.CAFE,
         label: "Cafe",
         icon: (
-          <CategoryIcon icon={<Coffee />} color="text-yellow-300" bg="bg-yellow-500/15" />
+          <CategoryIcon
+            icon={<Coffee />}
+            color="text-yellow-700 dark:text-yellow-400"
+            bg="bg-yellow-500"
+          />
         ),
       },
     ],
@@ -106,17 +118,35 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
       {
         value: Category.TRANSPORT,
         label: "Transport",
-        icon: <CategoryIcon icon={<Bus />} color="text-sky-300" bg="bg-sky-500/15" />,
+        icon: (
+          <CategoryIcon
+            icon={<Bus />}
+            color="text-sky-600 dark:text-sky-400"
+            bg="bg-sky-500"
+          />
+        ),
       },
       {
         value: Category.FUEL,
         label: "Fuel",
-        icon: <CategoryIcon icon={<Fuel />} color="text-red-300" bg="bg-red-500/15" />,
+        icon: (
+          <CategoryIcon
+            icon={<Fuel />}
+            color="text-red-600 dark:text-red-400"
+            bg="bg-red-500"
+          />
+        ),
       },
       {
         value: Category.TRAVEL,
         label: "Travel",
-        icon: <CategoryIcon icon={<Plane />} color="text-cyan-300" bg="bg-cyan-500/15" />,
+        icon: (
+          <CategoryIcon
+            icon={<Plane />}
+            color="text-blue-600 dark:text-blue-400"
+            bg="bg-blue-500"
+          />
+        ),
       },
     ],
   },
@@ -130,8 +160,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<ShoppingBag />}
-            color="text-pink-300"
-            bg="bg-pink-500/15"
+            color="text-pink-600 dark:text-pink-400"
+            bg="bg-pink-500"
           />
         ),
       },
@@ -141,8 +171,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<Sparkles />}
-            color="text-fuchsia-300"
-            bg="bg-fuchsia-500/15"
+            color="text-fuchsia-600 dark:text-fuchsia-400"
+            bg="bg-fuchsia-500"
           />
         ),
       },
@@ -150,7 +180,11 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.ELECTRONICS,
         label: "Electronics",
         icon: (
-          <CategoryIcon icon={<Laptop />} color="text-violet-300" bg="bg-violet-500/15" />
+          <CategoryIcon
+            icon={<Laptop />}
+            color="text-violet-600 dark:text-violet-400"
+            bg="bg-violet-500"
+          />
         ),
       },
     ],
@@ -163,7 +197,11 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.ELECTRICITY,
         label: "Electricity",
         icon: (
-          <CategoryIcon icon={<Zap />} color="text-yellow-300" bg="bg-yellow-500/15" />
+          <CategoryIcon
+            icon={<Zap />}
+            color="text-yellow-600 dark:text-yellow-400"
+            bg="bg-yellow-500"
+          />
         ),
       },
       {
@@ -172,8 +210,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<WashingMachine />}
-            color="text-blue-300"
-            bg="bg-blue-500/15"
+            color="text-blue-600 dark:text-blue-400"
+            bg="bg-blue-500"
           />
         ),
       },
@@ -181,14 +219,22 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.GAS,
         label: "Gas",
         icon: (
-          <CategoryIcon icon={<Flame />} color="text-orange-300" bg="bg-orange-500/15" />
+          <CategoryIcon
+            icon={<Flame />}
+            color="text-orange-600 dark:text-orange-400"
+            bg="bg-orange-500"
+          />
         ),
       },
       {
         value: Category.INTERNET,
         label: "Internet",
         icon: (
-          <CategoryIcon icon={<Wifi />} color="text-indigo-300" bg="bg-indigo-500/15" />
+          <CategoryIcon
+            icon={<Wifi />}
+            color="text-indigo-600 dark:text-indigo-400"
+            bg="bg-indigo-500"
+          />
         ),
       },
       {
@@ -197,8 +243,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<Smartphone />}
-            color="text-emerald-300"
-            bg="bg-emerald-500/15"
+            color="text-emerald-600 dark:text-emerald-400"
+            bg="bg-emerald-500"
           />
         ),
       },
@@ -206,7 +252,11 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.DTH,
         label: "DTH",
         icon: (
-          <CategoryIcon icon={<Tv />} color="text-purple-300" bg="bg-purple-500/15" />
+          <CategoryIcon
+            icon={<Tv />}
+            color="text-purple-600 dark:text-purple-400"
+            bg="bg-purple-500"
+          />
         ),
       },
     ],
@@ -219,19 +269,33 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.HEALTH,
         label: "Health",
         icon: (
-          <CategoryIcon icon={<Hospital />} color="text-rose-300" bg="bg-rose-500/15" />
+          <CategoryIcon
+            icon={<Hospital />}
+            color="text-rose-600 dark:text-rose-400"
+            bg="bg-rose-500"
+          />
         ),
       },
       {
         value: Category.PHARMACY,
         label: "Pharmacy",
-        icon: <CategoryIcon icon={<Pill />} color="text-pink-300" bg="bg-pink-500/15" />,
+        icon: (
+          <CategoryIcon
+            icon={<Pill />}
+            color="text-pink-600 dark:text-pink-400"
+            bg="bg-pink-500"
+          />
+        ),
       },
       {
         value: Category.FITNESS,
         label: "Fitness",
         icon: (
-          <CategoryIcon icon={<Dumbbell />} color="text-lime-300" bg="bg-lime-500/15" />
+          <CategoryIcon
+            icon={<Dumbbell />}
+            color="text-lime-600 dark:text-lime-400"
+            bg="bg-lime-500"
+          />
         ),
       },
     ],
@@ -246,8 +310,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<Clapperboard />}
-            color="text-purple-300"
-            bg="bg-purple-500/15"
+            color="text-purple-600 dark:text-purple-400"
+            bg="bg-purple-500"
           />
         ),
       },
@@ -255,7 +319,11 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.SUBSCRIPTIONS,
         label: "Subscriptions",
         icon: (
-          <CategoryIcon icon={<Gamepad2 />} color="text-blue-300" bg="bg-blue-500/15" />
+          <CategoryIcon
+            icon={<Gamepad2 />}
+            color="text-blue-600 dark:text-blue-400"
+            bg="bg-blue-500"
+          />
         ),
       },
     ],
@@ -270,8 +338,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<Wallet />}
-            color="text-emerald-300"
-            bg="bg-emerald-500/15"
+            color="text-emerald-600 dark:text-emerald-400"
+            bg="bg-emerald-500"
           />
         ),
       },
@@ -279,7 +347,11 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.CASH,
         label: "Cash",
         icon: (
-          <CategoryIcon icon={<Banknote />} color="text-green-300" bg="bg-green-500/15" />
+          <CategoryIcon
+            icon={<Banknote />}
+            color="text-green-600 dark:text-green-400"
+            bg="bg-green-500"
+          />
         ),
       },
       {
@@ -288,8 +360,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<Receipt />}
-            color="text-orange-300"
-            bg="bg-orange-500/15"
+            color="text-orange-600 dark:text-orange-400"
+            bg="bg-orange-500"
           />
         ),
       },
@@ -297,7 +369,11 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.INSURANCE,
         label: "Insurance",
         icon: (
-          <CategoryIcon icon={<HeartPulse />} color="text-rose-300" bg="bg-rose-500/15" />
+          <CategoryIcon
+            icon={<HeartPulse />}
+            color="text-rose-600 dark:text-rose-400"
+            bg="bg-rose-500"
+          />
         ),
       },
       {
@@ -306,8 +382,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<IndianRupee />}
-            color="text-teal-300"
-            bg="bg-teal-500/15"
+            color="text-teal-600 dark:text-teal-400"
+            bg="bg-teal-500"
           />
         ),
       },
@@ -315,7 +391,11 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.CREDIT_CARD_BILL,
         label: "CC Bill",
         icon: (
-          <CategoryIcon icon={<CreditCard />} color="text-cyan-300" bg="bg-cyan-500/15" />
+          <CategoryIcon
+            icon={<CreditCard />}
+            color="text-cyan-600 dark:text-cyan-400"
+            bg="bg-cyan-500"
+          />
         ),
       },
     ],
@@ -330,8 +410,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<GraduationCap />}
-            color="text-indigo-300"
-            bg="bg-indigo-500/15"
+            color="text-indigo-600 dark:text-indigo-400"
+            bg="bg-indigo-500"
           />
         ),
       },
@@ -339,14 +419,22 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.PERSONAL_CARE,
         label: "Personal Care",
         icon: (
-          <CategoryIcon icon={<Sparkles />} color="text-pink-300" bg="bg-pink-500/15" />
+          <CategoryIcon
+            icon={<Sparkles />}
+            color="text-pink-600 dark:text-pink-400"
+            bg="bg-pink-500"
+          />
         ),
       },
       {
         value: Category.HOME,
         label: "Home",
         icon: (
-          <CategoryIcon icon={<Home />} color="text-orange-300" bg="bg-orange-500/15" />
+          <CategoryIcon
+            icon={<Home />}
+            color="text-orange-600 dark:text-orange-400"
+            bg="bg-orange-500"
+          />
         ),
       },
     ],
@@ -358,7 +446,13 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
       {
         value: Category.CHARITY,
         label: "Charity",
-        icon: <CategoryIcon icon={<Gift />} color="text-red-300" bg="bg-red-500/15" />,
+        icon: (
+          <CategoryIcon
+            icon={<Gift />}
+            color="text-red-600 dark:text-red-400"
+            bg="bg-red-500"
+          />
+        ),
       },
       {
         value: Category.TAXES,
@@ -366,8 +460,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<BadgeIndianRupee />}
-            color="text-yellow-300"
-            bg="bg-yellow-500/15"
+            color="text-yellow-600 dark:text-yellow-400"
+            bg="bg-yellow-500"
           />
         ),
       },
@@ -377,8 +471,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<Briefcase />}
-            color="text-slate-300"
-            bg="bg-slate-500/15"
+            color="text-slate-600 dark:text-slate-400"
+            bg="bg-slate-500"
           />
         ),
       },
@@ -386,7 +480,11 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.UNCATEGORIZED,
         label: "Other",
         icon: (
-          <CategoryIcon icon={<CircleHelp />} color="text-gray-300" bg="bg-gray-500/15" />
+          <CategoryIcon
+            icon={<CircleHelp />}
+            color="text-gray-600 dark:text-gray-400"
+            bg="bg-gray-500"
+          />
         ),
       },
     ],
@@ -399,21 +497,33 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         value: Category.RENT,
         label: "Rent",
         icon: (
-          <CategoryIcon icon={<Home />} color="text-orange-300" bg="bg-orange-500/15" />
+          <CategoryIcon
+            icon={<Home />}
+            color="text-orange-600 dark:text-orange-400"
+            bg="bg-orange-500"
+          />
         ),
       },
       {
         value: Category.UTILITIES,
         label: "Utilities",
         icon: (
-          <CategoryIcon icon={<Wrench />} color="text-zinc-300" bg="bg-zinc-500/15" />
+          <CategoryIcon
+            icon={<Wrench />}
+            color="text-slate-600 dark:text-slate-400"
+            bg="bg-slate-500"
+          />
         ),
       },
       {
         value: Category.HEALTHCARE,
         label: "Healthcare",
         icon: (
-          <CategoryIcon icon={<Hospital />} color="text-rose-300" bg="bg-rose-500/15" />
+          <CategoryIcon
+            icon={<Hospital />}
+            color="text-rose-600 dark:text-rose-400"
+            bg="bg-rose-500"
+          />
         ),
       },
       {
@@ -422,8 +532,8 @@ export const CATEGORY_GROUPS: CategoryGroup[] = [
         icon: (
           <CategoryIcon
             icon={<IndianRupee />}
-            color="text-green-300"
-            bg="bg-green-500/15"
+            color="text-green-600 dark:text-green-400"
+            bg="bg-green-500"
           />
         ),
       },
