@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { useNavigate } from "react-router-dom";
 
 import { useAuthStore } from "../hooks/useAuthStore";
 import { getUserTimezone } from "../utils/timezone";
@@ -140,6 +141,20 @@ api.interceptors.response.use(
       _retry?: boolean;
     };
 
+    const isAuthRoute = ["/auth/refresh", "/auth/logout", "/auth/login"].some((path) =>
+      originalRequest.url?.includes(path),
+    );
+
+    // Never retry auth routes
+    if (isAuthRoute) {
+      if (originalRequest.url?.includes("/auth/refresh")) {
+        processQueue(error, null);
+        isRefreshing = false;
+        useAuthStore.getState().logout();
+      }
+      return Promise.reject(error);
+    }
+
     // If error is 401 and we haven't already retried this request
     if (error.response?.status === 401 && !originalRequest._retry) {
       // If we are already in the middle of refreshing, queue this request
@@ -184,6 +199,8 @@ api.interceptors.response.use(
         // Optional: Redirect to login or broadcast logout event
         // window.dispatchEvent(new Event("auth:logout"));
         useAuthStore.getState().logout();
+        const navigate = useNavigate();
+        navigate("/");
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
