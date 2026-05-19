@@ -87,21 +87,21 @@ export const AddExpense = ({ onCancel, onSuccess, transaction }: AddExpenseProps
   };
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="space-y-6 pb-44">
       <header className="flex items-center gap-3">
         <Button variant="tertiary" size="md" iconOnly onClick={onCancel}>
           <ArrowLeft size={18} />
         </Button>
-        {isEditing && (
-          <span className="font-headline text-lg font-bold">Edit Transaction</span>
-        )}
+
+        <span className="font-headline text-lg font-bold">
+          {isEditing ? "Edit Transaction" : "Add Expense"}
+        </span>
       </header>
 
       <AmountInput value={amount} onChange={setAmount} />
 
-      <CategoryPicker value={category} onChange={setCategory} />
-
-      <div className="space-y-6">
+      {/* Details Card */}
+      <div className="glass-card rounded-lg p-5 space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             label="Merchant"
@@ -110,12 +110,14 @@ export const AddExpense = ({ onCancel, onSuccess, transaction }: AddExpenseProps
             required
             onChange={(e) => setMerchant(e.target.value)}
           />
+
           <Input
             label="Date & Time"
             type="datetime-local"
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
+
           <Select
             label="Payment Method"
             options={paymentOptions}
@@ -126,37 +128,55 @@ export const AddExpense = ({ onCancel, onSuccess, transaction }: AddExpenseProps
         </div>
 
         <TextArea
-          label="Notes (Optional)"
+          label="Notes"
           placeholder="What was this expense for?"
           rows={3}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+      </div>
 
-        <RawMessageViewer message={transaction?.rawMessage || ""} />
+      <CategoryPicker value={category} onChange={setCategory} />
 
-        <Button
-          size="lg"
-          variant="primary"
-          loading={isPending || isUpdating}
-          className="w-full"
-          onClick={handleSubmit}
-        >
-          <CheckCircle size={20} />
-          {isEditing ? "Update Transaction" : "Save Expense"}
-        </Button>
-        {isEditing && (
-          <Button
-            size="lg"
-            variant="danger"
-            loading={isDeleting}
-            className="w-full"
-            onClick={handleDelete}
-          >
-            <Trash size={20} />
-            Delete Transaction
-          </Button>
-        )}
+      <RawMessageViewer message={transaction?.rawMessage || ""} />
+
+      {/* Sticky Save Bar ABOVE NAV */}
+      {/* Sticky Action Bar */}
+      <div className="fixed bottom-21.5 left-0 right-0 z-40 px-4">
+        <div className="glass-card rounded-3xl p-3 shadow-2xl">
+          <div className="flex gap-3">
+            {/* Cancel */}
+            <Button size="lg" variant="tertiary" className="flex-1" onClick={onCancel}>
+              Cancel
+            </Button>
+
+            {/* Save */}
+            <Button
+              size="lg"
+              variant="primary"
+              loading={isPending || isUpdating}
+              className="flex-2"
+              onClick={handleSubmit}
+            >
+              <CheckCircle size={18} />
+
+              {isEditing ? "Update" : "Save"}
+            </Button>
+          </div>
+
+          {isEditing && (
+            <Button
+              size="md"
+              variant="danger"
+              loading={isDeleting}
+              className="w-full mt-3"
+              onClick={handleDelete}
+            >
+              <Trash size={18} />
+              Delete Transaction
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
