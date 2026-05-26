@@ -53,6 +53,10 @@ export interface TransactionSummary {
 
 export type CreateTransactionBody = Omit<Transaction, "_id" | "userId">;
 
+export type DonutPoint = { category: string; amount: number };
+export type BarPoint = { key: number; amount: number };
+export type BarGroupBy = "hour" | "dayOfWeek" | "dayOfMonth" | "month";
+
 // ── Service functions ──────────────────────────────────────────────
 
 export const transactionService = {
@@ -74,4 +78,22 @@ export const transactionService = {
 
   remove: (id: string) =>
     axiosInstance.delete<{ message: string }>(`/transactions/${id}`).then((r) => r.data),
+
+  getDonut: (params: { startDate?: string; endDate?: string; tz?: string }) =>
+    axiosInstance
+      .get<{ data: DonutPoint[] }>("/transactions/charts/donut", { params })
+      .then((r) => r.data),
+
+  getBar: (params: {
+    startDate?: string;
+    endDate?: string;
+    tz?: string;
+    groupBy: BarGroupBy;
+  }) =>
+    axiosInstance
+      .get<{
+        data: BarPoint[];
+        groupBy: BarGroupBy;
+      }>("/transactions/charts/bar", { params })
+      .then((r) => r.data),
 };

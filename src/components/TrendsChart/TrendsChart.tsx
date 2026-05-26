@@ -12,6 +12,8 @@ import {
 import { Period } from "@/src/types";
 
 import ErrorCard from "../ErrorCard";
+import Button from "../Button";
+import { useNavigate } from "react-router-dom";
 
 type ExpenseBarItem = {
   label: string;
@@ -80,7 +82,9 @@ export default function ExpenseBarChart({
   subtitle = "Your weekly spending pattern",
   period = "Last 7 Days",
 }: Props) {
+  console.log("data=========>>>>>", data);
   const hasData = data.length > 0;
+  const navigate = useNavigate();
 
   const total = useMemo(() => data.reduce((sum, item) => sum + item.amount, 0), [data]);
 
@@ -158,9 +162,14 @@ export default function ExpenseBarChart({
 
           <p className="mt-2 text-sm">Add transactions to view trends.</p>
 
-          <button className="mt-5 rounded-full px-4 py-2 text-sm font-medium bg-primary text-surface hover:bg-primary-container transition-all flex items-center justify-center gap-2 group active:scale-95 duration-150">
+          <Button
+            onClick={() => {
+              navigate("/add");
+            }}
+            className="mt-5"
+          >
             Add Expense
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="h-80 w-full">

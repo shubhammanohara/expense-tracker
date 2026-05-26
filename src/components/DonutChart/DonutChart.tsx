@@ -1,12 +1,15 @@
 import { FC, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Pie, PieChart, ResponsiveContainer, Sector } from "recharts";
 
 import { Category } from "@/src/types";
+import { CATEGORY_MAP } from "@/src/utils/categories";
 
+import Button from "../Button";
 import ErrorCard from "../ErrorCard/";
 
 export interface ExpenseItem {
-  name: Category;
+  name: string;
   value: number;
   fill: string;
 }
@@ -20,10 +23,10 @@ interface ExpenseDonutChartProps {
 }
 
 const demoData: ExpenseItem[] = [
-  { name: "food", value: 12450, fill: "#6366f1" },
-  { name: "transport", value: 8600, fill: "#22c55e" },
-  { name: "entertainment", value: 5400, fill: "#f59e0b" },
-  { name: "other", value: 7200, fill: "#ef4444" },
+  { name: CATEGORY_MAP.dining_out.label, value: 12450, fill: "#6366f1" },
+  { name: CATEGORY_MAP.travel.label, value: 8600, fill: "#22c55e" },
+  { name: CATEGORY_MAP.entertainment.label, value: 5400, fill: "#f59e0b" },
+  { name: CATEGORY_MAP.uncategorized.label, value: 7200, fill: "#ef4444" },
 ];
 
 const formatCurrency = (value: number) =>
@@ -41,6 +44,7 @@ export const DonutChart: FC<ExpenseDonutChartProps> = ({
   period = "This month",
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const navigate = useNavigate();
 
   const hasData = data.length > 0;
 
@@ -113,6 +117,7 @@ export const DonutChart: FC<ExpenseDonutChartProps> = ({
                   animationDuration={800}
                   animationEasing="ease-out"
                   onMouseEnter={(_, index) => setActiveIndex(index)}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   shape={(props: any) => {
                     const isActive = props.index === activeIndex;
 
@@ -208,7 +213,9 @@ export const DonutChart: FC<ExpenseDonutChartProps> = ({
                       }}
                     />
 
-                    <span className={`text-sm font-medium`}>{item.name}</span>
+                    <span className={`text-sm font-medium`}>
+                      {CATEGORY_MAP?.[item.name as Category]?.label}
+                    </span>
                   </div>
 
                   <div className="text-right">
@@ -229,9 +236,14 @@ export const DonutChart: FC<ExpenseDonutChartProps> = ({
                 Add transactions to view your expense breakdown.
               </p>
 
-              <button className="mt-5 rounded-full px-4 py-2 text-sm font-medium bg-primary text-surface hover:bg-primary-container transition-all flex items-center justify-center gap-2 group active:scale-95 duration-150">
+              <Button
+                onClick={() => {
+                  navigate("/add");
+                }}
+                className="mt-5"
+              >
                 Add Expense
-              </button>
+              </Button>
             </div>
           )}
         </div>

@@ -1,12 +1,15 @@
 import { FC } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useTransactions } from "@/src/hooks/useTransaction";
 
+import Button from "../Button";
 import ErrorCard from "../ErrorCard";
 import TransactionCard from "../TransactionCard";
 
 const RecentTransactionsSection: FC = () => {
   const { data: transactionData, isLoading, error } = useTransactions({ limit: 5 });
+  const navigate = useNavigate();
 
   if (isLoading) {
     <div className="space-y-3">
@@ -29,9 +32,9 @@ const RecentTransactionsSection: FC = () => {
         <h2 className="font-headline text-2xl font-bold tracking-tight">
           Recent Transactions
         </h2>
-        <button className="text-primary text-sm font-bold flex items-center gap-1 hover:underline">
+        <Button variant="outline-primary" onClick={() => navigate("/history")}>
           View All
-        </button>
+        </Button>
       </div>
       <div className="space-y-3">
         {transactionData.data.map((tx) => (

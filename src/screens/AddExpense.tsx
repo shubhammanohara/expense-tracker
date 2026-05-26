@@ -142,7 +142,7 @@ export const AddExpense = ({ onCancel, onSuccess, transaction }: AddExpenseProps
 
       {/* Sticky Save Bar ABOVE NAV */}
       {/* Sticky Action Bar */}
-      <div className="fixed bottom-21.5 left-0 right-0 z-40 px-4">
+      <div className="fixed bottom-21.5 left-0 right-0 z-40 px-4 lg:mx-64">
         <div className="glass-card rounded-3xl p-3 shadow-2xl">
           <div className="flex gap-3">
             {/* Cancel */}

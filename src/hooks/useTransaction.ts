@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-query";
 
 import {
+  BarGroupBy,
   CreateTransactionBody,
   TransactionQuery,
   transactionService,
@@ -15,6 +16,8 @@ import {
 import { TransactionFilters } from "../types/filters";
 import { filtersToQuery } from "../utils/filtersToQuery";
 import { getUserTimezone } from "../utils/timezone";
+
+type DateFilter = { startDate?: string; endDate?: string };
 
 // ── Query keys ─────────────────────────────────────────────────────
 
@@ -97,5 +100,28 @@ export const useDeleteTransaction = () => {
       queryClient.invalidateQueries({ queryKey: transactionKeys.all });
       queryClient.invalidateQueries({ queryKey: transactionKeys.summary() });
     },
+  });
+};
+
+// ── GET /transactions/charts/donut ──────────────────────────────────────────────
+
+export const useDonutChart = (filters: DateFilter) => {
+  const tz = getUserTimezone();
+  return useQuery({
+    queryKey: ["charts", "donut", { ...filters, tz }],
+    queryFn: () => transactionService.getDonut({ ...filters, tz }),
+    placeholderData: keepPreviousData,
+  });
+};
+
+// ── GET /transactions/charts/bar ──────────────────────────────────────────────
+
+export const useBarChart = (filters: DateFilter, groupBy: BarGroupBy) => {
+  const tz = getUserTimezone();
+  return useQuery({
+    queryKey: ["charts", "bar", { ...filters, tz, groupBy }],
+    queryFn: () => transactionService.getBar({ ...filters, tz, groupBy }),
+    placeholderData: keepPreviousData,
+    enabled: !!groupBy,
   });
 };

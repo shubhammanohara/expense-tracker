@@ -50,7 +50,7 @@ const App = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -16, scale: 0.98 }}
           >
-            <Routes location={location}>
+            <Routes location={location} key={location.pathname}>
               {/* Public routes */}
               <Route path="/login" element={<Login />} />
 

@@ -1,8 +1,9 @@
 import { useCallback, useMemo, useState } from "react";
 
-import { useTransactions } from "@/src/hooks/useTransaction";
+import { useBarChart } from "@/src/hooks/useTransaction";
 import { DateRange, Period, TabsData } from "@/src/types";
 import { buildSubFilters, SubFilterOption } from "@/src/utils/buildSubFilters";
+import { mapBarPoints } from "@/src/utils/chartMappers";
 import {
   PERIOD_DAILY,
   PERIOD_MONTHLY,
@@ -10,7 +11,7 @@ import {
   PERIOD_YEARLY,
 } from "@/src/utils/constants";
 import { getDateFilter } from "@/src/utils/dateFilters";
-import { groupTransactions } from "@/src/utils/groupTransactions";
+import { periodToGroupBy } from "@/src/utils/periodToGroupBy";
 
 import SubFilterTabs from "../SubFilterTabs/SubFilterTabs";
 import TimeRangeTabs from "../TimeRangeTabs/TimeRangeTabs ";
@@ -73,11 +74,12 @@ const TrendsSection = () => {
     [subFilter, period],
   );
 
-  const { data: transactionData, isLoading, error } = useTransactions(dateFilter);
+  const groupBy = periodToGroupBy[period];
+  const { data, isLoading, error } = useBarChart(dateFilter, groupBy);
 
   const chartData = useMemo(
-    () => groupTransactions(transactionData?.data ?? [], period),
-    [transactionData, period],
+    () => mapBarPoints(data?.data ?? [], groupBy),
+    [data, groupBy],
   );
 
   const onTabChange = useCallback((value: Period | DateRange) => {

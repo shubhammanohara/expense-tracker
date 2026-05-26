@@ -1,8 +1,9 @@
-import { FC, ReactNode, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 
-import { useTransactions } from "@/src/hooks/useTransaction";
+import { useDonutChart } from "@/src/hooks/useTransaction";
 import { Category, DateRange, Period, TabsData } from "@/src/types";
 import { buildSubFilters, SubFilterOption } from "@/src/utils/buildSubFilters";
+import { mapDonutPoints } from "@/src/utils/chartMappers";
 import {
   DATE_RANGE_MONTH,
   DATE_RANGE_TODAY,
@@ -15,10 +16,6 @@ import DonutChart from "../DonutChart";
 import { ExpenseItem } from "../DonutChart/DonutChart";
 import SubFilterTabs from "../SubFilterTabs/SubFilterTabs";
 import TimeRangeTabs from "../TimeRangeTabs/TimeRangeTabs ";
-
-interface HeroSectionProps {
-  children?: ReactNode;
-}
 
 interface TitleData {
   subtitle: string;
@@ -52,26 +49,6 @@ export const TITLE_DATA: TitleData[] = [
   },
 ];
 
-function groupByCategory(
-  transactions: { category: string; amount: number }[],
-): ExpenseItem[] {
-  const grouped = transactions.reduce<Record<string, number>>(
-    (acc, { category, amount }) => {
-      acc[category] = (acc[category] ?? 0) + amount;
-      return acc;
-    },
-    {},
-  );
-
-  return Object.entries(grouped).map(([category, amount], i) => ({
-    name: category as Category,
-    value: amount,
-    fill: COLORS[i % COLORS.length],
-  }));
-}
-
-const COLORS = ["#6366f1", "#22c55e", "#f59e0b", "#ef4444", "#06b6d4"];
-
 const HeroSection: FC = () => {
   const [tabsData, setTabsData] = useState<TabsData[]>(TABS);
   const [range, setRange] = useState<DateRange>(TABS[0].value as DateRange);
@@ -89,12 +66,9 @@ const HeroSection: FC = () => {
     [subFilter, range],
   );
 
-  const { data: transactionData, isLoading, error } = useTransactions(dateFilter);
+  const { data, isLoading, error } = useDonutChart(dateFilter);
 
-  const chartData = useMemo(
-    () => groupByCategory(transactionData?.data ?? []),
-    [transactionData],
-  );
+  const chartData = useMemo(() => mapDonutPoints(data?.data ?? []), [data]);
 
   const activePeriod = subFilter?.label ?? title.period;
 

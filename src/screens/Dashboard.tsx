@@ -15,6 +15,7 @@ const getGreetingMessage = (name?: string) => {
 
 export const Dashboard = () => {
   const { user } = useAuthStore.getState();
+
   return (
     <div className="space-y-8 pb-10">
       <section>

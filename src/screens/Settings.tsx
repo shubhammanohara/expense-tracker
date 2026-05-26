@@ -24,6 +24,7 @@ export default function ProfileSettings({
   onThemeToggle: () => void;
 }) {
   const { user, logout } = useAuthStore.getState();
+
   const navigate = useNavigate();
   const initials = user?.name
     .split(" ")

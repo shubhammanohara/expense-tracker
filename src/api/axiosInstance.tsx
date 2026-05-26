@@ -1,5 +1,4 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
-import { useNavigate } from "react-router-dom";
 
 import { useAuthStore } from "../hooks/useAuthStore";
 import { getUserTimezone } from "../utils/timezone";
