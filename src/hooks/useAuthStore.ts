@@ -9,7 +9,7 @@ interface AuthState {
   isAuthenticated: boolean;
 
   setUser: (user: AuthUser) => void;
-  setToken: (token: string) => void;
+  setToken: (token: string | null) => void;
   logout: () => void;
 }
 

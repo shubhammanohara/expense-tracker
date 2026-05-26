@@ -147,11 +147,6 @@ api.interceptors.response.use(
 
     // Never retry auth routes
     if (isAuthRoute) {
-      if (originalRequest.url?.includes("/auth/refresh")) {
-        processQueue(error, null);
-        isRefreshing = false;
-        useAuthStore.getState().logout();
-      }
       return Promise.reject(error);
     }
 
@@ -194,13 +189,11 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // Refresh failed (e.g. refresh token expired or revoked)
         processQueue(refreshError, null);
-        // const { setToken } = useAuthStore.getState();
-        // setToken(null);
-        // Optional: Redirect to login or broadcast logout event
-        // window.dispatchEvent(new Event("auth:logout"));
+
         useAuthStore.getState().logout();
-        const navigate = useNavigate();
-        navigate("/");
+
+        window.location.href = "/login";
+
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
